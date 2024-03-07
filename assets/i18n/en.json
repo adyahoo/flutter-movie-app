@@ -1,0 +1,23 @@
+{
+  "welcome": "Welcome.",
+  "welcome_desc": "Millions of movies, TV shows and people to discover. Explore Now",
+  "get_started": "Get Started",
+  "login_to_account": "Login to your account",
+  "login_desc": "In order to use the editing and rating capabilities of TMDB, as well as get personal recommendations you will need to login to your account",
+  "login": "Login",
+  "login_as_guest": "Login as Guest",
+  "search_movie": "Search movie",
+  "home": "Home",
+  "movies": "Movies",
+  "account": "Account",
+  "what_popular": "What's Popular",
+  "now_playing": "Now Playing",
+  "latest_movie": "Latest Movies to Watch",
+  "top_rated": "Top Rated Movies",
+  "success": "API request success",
+  "manage_account": "Manage your account",
+  "ratings": "Ratings",
+  "favorite": "Favorite",
+  "list": "List",
+  "logout": "Logout"
+}
