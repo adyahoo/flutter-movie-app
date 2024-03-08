@@ -20,11 +20,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     _authBloc = BlocProvider.of(context);
-    _navigateWelcome(_authBloc.state);
+    _navigateWelcome();
     super.initState();
   }
 
-  void _navigateWelcome(ApiResultState state) {
+  void _navigateWelcome() {
     final isGuest = inject<StorageService>().isGuest();
     final isLogin = inject<StorageService>().isLogin();
 

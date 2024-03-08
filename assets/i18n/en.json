@@ -19,5 +19,9 @@
   "ratings": "Ratings",
   "favorite": "Favorite",
   "list": "List",
-  "logout": "Logout"
+  "logout": "Logout",
+  "logout_title": "Are you sure want to log out?",
+  "logout_desc": "If you logout you cannot access your account data like ratings,favorite, watchlist and list.",
+  "cancel": "Cancel",
+  "sure": "Sure"
 }

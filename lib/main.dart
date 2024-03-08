@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:movie_app/app/blocs/account/account_bloc.dart';
 import 'package:movie_app/app/blocs/auth/auth_bloc.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/router/router.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
             storageService: inject(),
           ),
         ),
+        BlocProvider<AccountBloc>(
+          create: (context) => AccountBloc(accountRepository: inject()),
+        )
       ],
       child: LocalizationProvider(
         state: LocalizationProvider.of(context).state,

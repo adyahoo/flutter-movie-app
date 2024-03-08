@@ -21,12 +21,12 @@ class AuthService {
   Future<RequestTokenResponse> login(LoginData loginData, String token) async {
     return clientExecutor<RequestTokenResponse>(
       execute: () async {
-        final data = {
+        final body = {
           "username": loginData.username,
           "password": loginData.password,
           "request_token": token,
         };
-        final res = await client.post('authentication/token/validate_with_login', data: data);
+        final res = await client.post('authentication/token/validate_with_login', data: body);
 
         return RequestTokenResponse.fromJson(res.data);
       },
@@ -50,6 +50,18 @@ class AuthService {
         final res = await client.get('authentication/guest_session/new');
 
         return GuestSessionResponse.fromJson(res.data);
+      },
+    );
+  }
+
+  Future<bool> logout(String sessionId) async {
+    return clientExecutor<bool>(
+      execute: () async {
+        final body = {"session_id": sessionId};
+
+        final res = await client.delete("authentication/session", data: body);
+
+        return res.data['success'];
       },
     );
   }

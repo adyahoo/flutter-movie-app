@@ -49,10 +49,17 @@ class AuthBloc extends Bloc<AuthEvent, ApiResultState> {
       emit(Success<Authenticated>(null));
     });
 
-    on<LogoutEvent>((event, emit) {
-      storageService.setSessionID("");
-      storageService.setIsGuest(false);
-      emit(Unauthenticated());
+    on<LogoutEvent>((event, emit) async {
+      emit(Loading<Unauthenticated>());
+
+      try {
+        await authRepository.logout();
+
+        emit(Success<Unauthenticated>(null));
+      } on ApiException catch (e) {
+        emit(Error<Unauthenticated>(e));
+        errorHandler(e);
+      }
     });
   }
 }

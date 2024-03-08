@@ -30,4 +30,18 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<void> logout() async {
+    try {
+      final sessionId = storageService.getSessionID();
+      final res = await authService.logout(sessionId!);
+
+      if (res) {
+        storageService.setIsGuest(false);
+        storageService.setSessionID("");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
