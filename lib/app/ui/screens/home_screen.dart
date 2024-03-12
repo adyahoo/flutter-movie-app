@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:movie_app/app/blocs/movie/movie_bloc.dart';
 import 'package:movie_app/app/ui/widgets/movie_appbar.dart';
 import 'package:movie_app/app/ui/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_color.dart';
 import 'package:movie_app/utils/dummies/MovieDummyData.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.onClickSearch});
 
   final void Function() onClickSearch;
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late MovieBloc _movieBloc;
+
+  @override
+  void initState() {
+    _movieBloc = context.read<MovieBloc>();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MovieAppBar.home(
-        onTapInput: onClickSearch,
+        onTapInput: widget.onClickSearch,
       ),
       body: SingleChildScrollView(
         child: Container(
