@@ -61,5 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, ApiResultState> {
         errorHandler(e);
       }
     });
+
+    on<UnauthenticatedEvent>((event, emit) {
+      emit(Success<Unauthenticated>(null));
+    });
   }
 }

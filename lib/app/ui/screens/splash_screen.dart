@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    _authBloc = BlocProvider.of(context);
+    _authBloc = context.read<AuthBloc>();
     _navigateWelcome();
     super.initState();
   }
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else if (isGuest) {
         _authBloc.add(LoginAsGuestEvent());
       } else {
-        _authBloc.add(LogoutEvent());
+        _authBloc.add(UnauthenticatedEvent());
       }
     });
   }

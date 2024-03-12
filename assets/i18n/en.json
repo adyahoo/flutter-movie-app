@@ -23,5 +23,8 @@
   "logout_title": "Are you sure want to log out?",
   "logout_desc": "If you logout you cannot access your account data like ratings,favorite, watchlist and list.",
   "cancel": "Cancel",
-  "sure": "Sure"
+  "sure": "Sure",
+  "guest": "Guest",
+  "not_login_yet": "Not login yet? Login to use all feature",
+  "login_now": "Login Now"
 }

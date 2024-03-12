@@ -10,8 +10,8 @@ class MovieButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.isLoading,
+    required this.onPress,
     this.size = MovieButtonSize.normal,
-    this.onPress,
     this.icon,
   })  : type = MovieButtonType.filled,
         textColor = Colors.white,
@@ -24,8 +24,8 @@ class MovieButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.isLoading,
+    required this.onPress,
     this.size = MovieButtonSize.normal,
-    this.onPress,
     this.icon,
   })  : type = MovieButtonType.outline,
         textColor = SecondaryColor.main,
@@ -38,8 +38,8 @@ class MovieButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.isLoading,
+    required this.onPress,
     this.size = MovieButtonSize.normal,
-    this.onPress,
     this.icon,
   })  : type = MovieButtonType.text,
         textColor = SecondaryColor.main,
@@ -66,7 +66,9 @@ class MovieButton extends StatelessWidget {
         side: (type == MovieButtonType.outline) ? BorderSide(color: (onPress != null) ? SecondaryColor.main : NeutralColor.neutral50, width: 1) : BorderSide.none,
       );
 
-  EdgeInsetsGeometry get padding => (size == MovieButtonSize.normal) ? const EdgeInsets.symmetric(vertical: 12, horizontal: 32) : const EdgeInsets.symmetric(vertical: 12, horizontal: 32);
+  EdgeInsetsGeometry get padding => (size == MovieButtonSize.normal)
+      ? const EdgeInsets.symmetric(vertical: 12, horizontal: 32)
+      : const EdgeInsets.symmetric(vertical: 12, horizontal: 32);
 
   TextStyle getTextStyle(BuildContext context) => (size == MovieButtonSize.normal) ? Theme.of(context).textTheme.titleMedium! : Theme.of(context).textTheme.bodyMedium!;
 
@@ -90,8 +92,8 @@ class MovieButton extends StatelessWidget {
       return SizedBox(
         width: (size == MovieButtonSize.normal) ? 22 : 16,
         height: (size == MovieButtonSize.normal) ? 22 : 16,
-        child: const CircularProgressIndicator(
-          color: Colors.white,
+        child: CircularProgressIndicator(
+          color: textColor,
         ),
       );
     }

@@ -34,7 +34,7 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       final sessionId = storageService.getSessionID();
-      final res = await authService.logout(sessionId!);
+      final res = await authService.logout(sessionId ?? "");
 
       if (res) {
         storageService.setIsGuest(false);

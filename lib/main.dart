@@ -48,9 +48,9 @@ class MyApp extends StatelessWidget {
         state: LocalizationProvider.of(context).state,
         child: BlocListener<AuthBloc, ApiResultState>(
           listener: (context, state) {
-            if (state is Success<Authenticated> || state is AuthenticatedAsGuest) {
+            if (state is Success<Authenticated> || state is Success<AuthenticatedAsGuest>) {
               goRouter.goNamed(RouteName.mainTab);
-            } else if (state is Unauthenticated) {
+            } else if (state is Success<Unauthenticated>) {
               goRouter.goNamed(RouteName.welcome);
             }
           },
