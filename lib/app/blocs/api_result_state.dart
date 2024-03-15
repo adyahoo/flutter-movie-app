@@ -25,3 +25,16 @@ class Error<T> extends ApiResultState {
   @override
   List<Object?> get props => [e];
 }
+
+enum ApiResultStatus { init, loading, success, error }
+
+class ApiResultStates<T> extends Equatable {
+  const ApiResultStates({required this.status, this.data, this.error});
+
+  final T? data;
+  final ApiResultStatus status;
+  final ApiException? error;
+
+  @override
+  List<Object?> get props => [data, status, error];
+}

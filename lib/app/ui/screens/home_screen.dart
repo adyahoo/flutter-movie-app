@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:movie_app/app/blocs/movie/movie_bloc.dart';
+import 'package:movie_app/app/blocs/api_result_state.dart';
+import 'package:movie_app/app/blocs/home/home_bloc.dart';
+import 'package:movie_app/app/data/models/movie_model.dart';
 import 'package:movie_app/app/ui/widgets/movie_appbar.dart';
 import 'package:movie_app/app/ui/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_color.dart';
+import 'package:movie_app/utils/constants.dart';
 import 'package:movie_app/utils/dummies/MovieDummyData.dart';
+
+import '../widgets/shimmer_container.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.onClickSearch});
@@ -17,11 +22,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late MovieBloc _movieBloc;
+  late HomeBloc _movieBloc;
 
   @override
   void initState() {
-    _movieBloc = context.read<MovieBloc>();
+    _movieBloc = context.read<HomeBloc>();
+
+    _movieBloc.add(GetPopularEvent());
+    _movieBloc.add(GetNowPlayingEvent());
+    _movieBloc.add(GetUpcomingEvent());
+    _movieBloc.add(GetTopRatedEvent());
 
     super.initState();
   }
@@ -33,37 +43,43 @@ class _HomeScreenState extends State<HomeScreen> {
         onTapInput: widget.onClickSearch,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _renderSection(
-                context,
-                translate("what_popular"),
+        child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _renderSection(
+                    context,
+                    translate("what_popular"),
+                    state.popular,
+                  ),
+                  const SizedBox(height: 20),
+                  _renderSection(
+                    context,
+                    translate("now_playing"),
+                    state.nowPlaying,
+                  ),
+                  const SizedBox(height: 20),
+                  _renderLatestSection(context, state.upcoming),
+                  const SizedBox(height: 20),
+                  _renderSection(context, translate("top_rated"), state.topRated),
+                ],
               ),
-              const SizedBox(height: 20),
-              _renderSection(
-                context,
-                translate("now_playing"),
-              ),
-              const SizedBox(height: 20),
-              _renderLatestSection(context),
-              const SizedBox(height: 20),
-              _renderSection(
-                context,
-                translate("top_rated"),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-Widget _renderSection(BuildContext context, String title) {
+Widget _renderSection(BuildContext context, String title, ApiResultStates<List<MovieModel>> result) {
+  final status = result.status;
+  final movies = result.data;
+
   return Column(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,21 +92,45 @@ Widget _renderSection(BuildContext context, String title) {
         ),
       ),
       const SizedBox(height: 16),
-      ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 260),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: MovieDummyData.getDummyPopular().length,
-          itemBuilder: (context, index) => const MovieCard(),
-          separatorBuilder: (context, index) => const SizedBox(width: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+      if (status == ApiResultStatus.loading || status == ApiResultStatus.init)
+        ShimmerContainer(
+          child: SizedBox(
+            height: 260,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, index) => Container(
+                height: 260,
+                width: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.black,
+                ),
+              ),
+              separatorBuilder: (context, index) => const SizedBox(width: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+          ),
+        )
+      else if (status == ApiResultStatus.success)
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 260),
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: movies?.length ?? 0,
+            itemBuilder: (context, index) => MovieCard(movies![index]),
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+          ),
         ),
-      )
     ],
   );
 }
 
-Widget _renderLatestSection(BuildContext context) {
+Widget _renderLatestSection(BuildContext context, ApiResultStates<List<MovieModel>> data) {
+  final status = data.status;
+  final movies = data.data;
+
   return Container(
     color: PrimaryColor.main,
     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -106,55 +146,40 @@ Widget _renderLatestSection(BuildContext context) {
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 180,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: MovieDummyData.getDummyPopular().length,
-            itemBuilder: (context, index) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
+        if (status == ApiResultStatus.loading || status == ApiResultStatus.init)
+          ShimmerContainer(
+            child: SizedBox(
+              height: 150,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                itemBuilder: (context, index) => Container(
                   width: 180,
-                  height: 133,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        "https://upload.wikimedia.org/wikipedia/commons/5/52/Chaeyoung_at_Gaon_Awards_red_carpet_on_January_23%2C_2019.jpg",
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      const Center(
-                        child: Icon(
-                          Icons.play_circle_fill_rounded,
-                          size: 32,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  "Moon Knight",
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white),
-                  maxLines: 1,
-                ),
-                Text(
-                  "Moon Knight description",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
-                  maxLines: 1,
-                ),
-              ],
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
             ),
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-          ),
-        )
+          )
+        else if (status == ApiResultStatus.success)
+          SizedBox(
+            height: 200,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: movies?.length ?? 0,
+              itemBuilder: (context, index) {
+                final movie = movies![index];
+
+                return UpcomingMovieCard(movie: movie);
+              },
+              separatorBuilder: (context, index) => const SizedBox(width: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+          )
       ],
     ),
   );

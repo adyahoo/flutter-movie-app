@@ -84,7 +84,7 @@ class _AccountScreenState extends State<AccountScreen> {
     _authBloc.add(LogoutEvent());
   }
 
-  void _navigateLogin(){
+  void _navigateLogin() {
     goRouter.pushNamed(RouteName.login);
   }
 
@@ -173,10 +173,7 @@ class _AccountScreenState extends State<AccountScreen> {
           Container(
             width: 64,
             height: 64,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: PrimaryColor.light
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: PrimaryColor.light),
             child: Image.asset(
               "assets/icons/ic_person_info.png",
               width: 32,
@@ -203,55 +200,55 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     final menu = (_isGuest) ? MovieDummyData.getGuestAccountMenu() : MovieDummyData.getAccountMenu();
 
-    return BlocListener<AuthBloc, ApiResultState>(
+    return BlocConsumer<AuthBloc, ApiResultState>(
       listener: (context, state) {
         if (state is Loading<Unauthenticated>) {
           showLoading(context);
         }
       },
-      child: BlocBuilder<AccountBloc, ApiResultState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: _renderAppbar(context, state),
-              centerTitle: true,
-              automaticallyImplyLeading: false,
-              leading: null,
-              backgroundColor: PrimaryColor.main,
-            ),
-            backgroundColor: Colors.white,
-            body: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    translate('manage_account'),
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    flex: 1,
-                    child: ListView.separated(
-                      itemCount: menu.length,
-                      itemBuilder: (context, index) {
-                        final data = menu[index];
+      builder: (context, state) {
+        final accountState = context.watch<AccountBloc>().state;
 
-                        return MovieMenuItem(
-                          data: data,
-                          onPress: _onPressMenuHandler,
-                        );
-                      },
-                      separatorBuilder: (context, index) => const SizedBox(height: 16),
-                    ),
+        return Scaffold(
+          appBar: AppBar(
+            title: _renderAppbar(context, accountState),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            leading: null,
+            backgroundColor: PrimaryColor.main,
+          ),
+          backgroundColor: Colors.white,
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  translate('manage_account'),
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  flex: 1,
+                  child: ListView.separated(
+                    itemCount: menu.length,
+                    itemBuilder: (context, index) {
+                      final data = menu[index];
+
+                      return MovieMenuItem(
+                        data: data,
+                        onPress: _onPressMenuHandler,
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(height: 16),
                   ),
-                  _renderLoginSection(context)
-                ],
-              ),
+                ),
+                (_isGuest) ? _renderLoginSection(context) : const SizedBox()
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

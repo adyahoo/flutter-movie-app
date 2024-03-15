@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:movie_app/app/data/models/movie_model.dart';
 import 'package:movie_app/utils/app_color.dart';
+import 'package:movie_app/utils/constants.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard({super.key});
+  const MovieCard(this.movie, {super.key});
+
+  final MovieModel movie;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,7 @@ class MovieCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Image.network(
-              "https://upload.wikimedia.org/wikipedia/commons/5/52/Chaeyoung_at_Gaon_Awards_red_carpet_on_January_23%2C_2019.jpg",
+              "${Constants.IMAGE_BASE_URL}${movie.poster}",
               width: double.infinity,
               height: 180,
               fit: BoxFit.cover,
@@ -33,13 +38,13 @@ class MovieCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Chaeyoung",
+                      movie.title,
                       style: Theme.of(context).textTheme.labelMedium,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      "Mar 10, 2022",
+                      _translateReleaseDate(movie.releaseDate),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
                       maxLines: 1,
                     )
@@ -52,4 +57,69 @@ class MovieCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class UpcomingMovieCard extends StatelessWidget {
+  const UpcomingMovieCard({super.key, required this.movie});
+
+  final MovieModel movie;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 180,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 180,
+            height: 133,
+            decoration: ShapeDecoration(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              children: [
+                Image.network(
+                  "${Constants.IMAGE_BASE_URL}${movie.poster}",
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                const Center(
+                  child: Icon(
+                    Icons.play_circle_fill_rounded,
+                    size: 32,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            movie.title,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white),
+            maxLines: 1,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            movie.overview,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+String _translateReleaseDate(String releaseDate){
+  final inputFormat = DateFormat("yyyy-MM-dd");
+  final inputDate = inputFormat.parse(releaseDate);
+
+  final outputFormat = DateFormat("MMM dd, yyyy");
+  return outputFormat.format(inputDate);
 }

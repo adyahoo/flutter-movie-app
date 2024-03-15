@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:movie_app/app/blocs/account/account_bloc.dart';
 import 'package:movie_app/app/blocs/auth/auth_bloc.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
@@ -9,10 +10,13 @@ import 'package:movie_app/app/router/routes.dart';
 import 'package:movie_app/di.dart';
 import 'package:movie_app/utils/theme/custom_theme.dart';
 
+import 'app/blocs/home/home_bloc.dart';
+
 final GlobalKey<ScaffoldMessengerState> rootScaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
 
   final delegate = await LocalizationDelegate.create(
     fallbackLocale: 'en_US',
@@ -42,7 +46,8 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<AccountBloc>(
           create: (context) => AccountBloc(accountRepository: inject()),
-        )
+        ),
+        BlocProvider<HomeBloc>(create: (context) => HomeBloc(homeRepository: inject()))
       ],
       child: LocalizationProvider(
         state: LocalizationProvider.of(context).state,
