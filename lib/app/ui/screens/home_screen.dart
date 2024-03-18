@@ -7,8 +7,6 @@ import 'package:movie_app/app/data/models/movie_model.dart';
 import 'package:movie_app/app/ui/widgets/movie_appbar.dart';
 import 'package:movie_app/app/ui/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_color.dart';
-import 'package:movie_app/utils/constants.dart';
-import 'package:movie_app/utils/dummies/MovieDummyData.dart';
 
 import '../widgets/shimmer_container.dart';
 

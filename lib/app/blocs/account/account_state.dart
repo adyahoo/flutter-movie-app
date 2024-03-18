@@ -1,16 +1,22 @@
 part of 'account_bloc.dart';
 
-abstract class AccountState extends ApiResultState {
-  AccountState();
-}
+class AccountState extends Equatable {
+  const AccountState({
+    required this.profile,
+  });
 
-class AccountInitial extends AccountState {}
+  final ApiResultStates profile;
 
-class Profile extends AccountState {
-  Profile(this.data);
+  factory AccountState.initial() => const AccountState(profile: ApiResultStates(status: ApiResultStatus.init));
 
-  final AccountModel data;
+  AccountState copyWith({
+    ApiResultStates? profile,
+  }) {
+    return AccountState(
+      profile: profile ?? this.profile,
+    );
+  }
 
   @override
-  List<Object?> get props => [data];
+  List<Object?> get props => [profile];
 }

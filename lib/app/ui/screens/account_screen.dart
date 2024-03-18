@@ -40,7 +40,7 @@ class _AccountScreenState extends State<AccountScreen> {
     _isGuest = inject<StorageService>().getIsGuest() ?? false;
 
     if (!_isGuest) {
-      _accountBloc.add(const GetProfileEvent());
+      _accountBloc.add(GetProfileEvent());
     }
 
     super.initState();
@@ -88,31 +88,27 @@ class _AccountScreenState extends State<AccountScreen> {
     goRouter.pushNamed(RouteName.login);
   }
 
-  Widget _renderAppbar(BuildContext context, ApiResultState state) {
-    if (state is Success<Profile>) {
-      final AccountModel account = state.response;
-
-      return Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: ShapeDecoration(shape: const CircleBorder(side: BorderSide(width: 2, color: Colors.white)), color: SecondaryColor.main),
-            child: (account.avatar != null)
-                ? Image.network(Constants.IMAGE_BASE_URL + account.avatar!)
-                : Center(
-                    child: Text(
-                      account.username[0].toUpperCase(),
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Colors.white),
-                    ),
-                  ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            account.username,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
-          ),
-        ],
+  Widget _renderAppbar(BuildContext context, AccountState state) {
+    if (state.profile.status == ApiResultStatus.loading || state.profile.status == ApiResultStatus.init) {
+      return ShimmerContainer(
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: const ShapeDecoration(
+                shape: CircleBorder(side: BorderSide(width: 0, color: Colors.white)),
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 150,
+              height: 12,
+              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
+            ),
+          ],
+        ),
       );
     }
 
@@ -142,25 +138,29 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     }
 
-    return ShimmerContainer(
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: const ShapeDecoration(
-              shape: CircleBorder(side: BorderSide(width: 0, color: Colors.white)),
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 150,
-            height: 12,
-            decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-          ),
-        ],
-      ),
+    final AccountModel account = state.profile.data;
+
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: ShapeDecoration(shape: const CircleBorder(side: BorderSide(width: 2, color: Colors.white)), color: SecondaryColor.main),
+          child: (account.avatar != null)
+              ? Image.network(Constants.IMAGE_BASE_URL + account.avatar!)
+              : Center(
+                  child: Text(
+                    account.username[0].toUpperCase(),
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Colors.white),
+                  ),
+                ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          account.username,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+        ),
+      ],
     );
   }
 

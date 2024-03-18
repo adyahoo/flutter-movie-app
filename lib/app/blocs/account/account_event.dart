@@ -7,9 +7,4 @@ abstract class AccountEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetProfileEvent extends AccountEvent {
-  const GetProfileEvent();
-
-  @override
-  List<Object?> get props => [];
-}
+class GetProfileEvent extends AccountEvent {}
