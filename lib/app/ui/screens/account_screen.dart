@@ -11,7 +11,7 @@ import 'package:movie_app/app/router/router.dart';
 import 'package:movie_app/app/router/routes.dart';
 import 'package:movie_app/app/ui/widgets/movie_button.dart';
 import 'package:movie_app/app/ui/widgets/movie_menu_item.dart';
-import 'package:movie_app/app/ui/widgets/shimmer_container.dart';
+import 'package:movie_app/app/ui/widgets/shimmer/shimmer_container.dart';
 import 'package:movie_app/di.dart';
 import 'package:movie_app/utils/dummies/MovieDummyData.dart';
 import 'package:movie_app/utils/utilities.dart';

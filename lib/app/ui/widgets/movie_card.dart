@@ -5,9 +5,14 @@ import 'package:movie_app/utils/app_color.dart';
 import 'package:movie_app/utils/constants.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard(this.movie, {super.key});
+  const MovieCard({
+    super.key,
+    required this.movie,
+    required this.onTap,
+  });
 
   final MovieModel movie;
+  final void Function(int id) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,41 +23,46 @@ class MovieCard extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       elevation: 1,
-      child: SizedBox(
-        width: 120,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Image.network(
-              "${Constants.IMAGE_BASE_URL}${movie.poster}",
-              width: double.infinity,
-              height: 180,
-              fit: BoxFit.cover,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: Theme.of(context).textTheme.labelMedium,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      _translateReleaseDate(movie.releaseDate),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                      maxLines: 1,
-                    )
-                  ],
-                ),
+      child: InkWell(
+        onTap: () {
+          onTap(movie.id);
+        },
+        child: SizedBox(
+          width: 120,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.network(
+                "${Constants.IMAGE_BASE_URL}${movie.poster}",
+                width: double.infinity,
+                height: 180,
+                fit: BoxFit.cover,
               ),
-            )
-          ],
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        movie.title,
+                        style: Theme.of(context).textTheme.labelMedium,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        _translateReleaseDate(movie.releaseDate),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                        maxLines: 1,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -115,8 +125,7 @@ class UpcomingMovieCard extends StatelessWidget {
   }
 }
 
-
-String _translateReleaseDate(String releaseDate){
+String _translateReleaseDate(String releaseDate) {
   final inputFormat = DateFormat("yyyy-MM-dd");
   final inputDate = inputFormat.parse(releaseDate);
 

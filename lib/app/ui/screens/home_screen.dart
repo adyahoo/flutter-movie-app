@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/blocs/home/home_bloc.dart';
 import 'package:movie_app/app/data/models/movie_model.dart';
+import 'package:movie_app/app/router/router.dart';
+import 'package:movie_app/app/router/routes.dart';
 import 'package:movie_app/app/ui/widgets/movie_appbar.dart';
 import 'package:movie_app/app/ui/widgets/movie_card.dart';
 import 'package:movie_app/utils/app_color.dart';
 
-import '../widgets/shimmer_container.dart';
+import '../widgets/shimmer/shimmer_container.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.onClickSearch});
@@ -116,13 +119,20 @@ Widget _renderSection(BuildContext context, String title, ApiResultStates<List<M
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: movies?.length ?? 0,
-            itemBuilder: (context, index) => MovieCard(movies![index]),
+            itemBuilder: (context, index) => MovieCard(
+              movie: movies![index],
+              onTap: _navigateDetail,
+            ),
             separatorBuilder: (context, index) => const SizedBox(width: 12),
             padding: const EdgeInsets.symmetric(horizontal: 16),
           ),
         ),
     ],
   );
+}
+
+void _navigateDetail(int id) {
+  goRouter.pushNamed(RouteName.detail);
 }
 
 Widget _renderLatestSection(BuildContext context, ApiResultStates<List<MovieModel>> data) {

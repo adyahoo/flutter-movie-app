@@ -3,6 +3,7 @@ class RoutePath {
   static const welcome = "/welcome";
   static const login = "login";
   static const mainTab = "/main_tab";
+  static const detail = "detail";
 }
 
 class RouteName {
@@ -10,4 +11,5 @@ class RouteName {
   static const welcome = "welcome";
   static const login = "login";
   static const mainTab = "main_tab";
+  static const detail = "detail";
 }

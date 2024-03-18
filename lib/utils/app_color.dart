@@ -34,6 +34,7 @@ abstract class NeutralColor {
 
 abstract class OtherColor {
   static final lineDivider = RGBA.rgba(244, 244, 244, 1);
+  static final dot = RGBA.rgba(196, 196, 196, 1);
 }
 
 const shimmerGradient = LinearGradient(
