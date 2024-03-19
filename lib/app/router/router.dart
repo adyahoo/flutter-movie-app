@@ -34,9 +34,11 @@ final goRouter = GoRouter(
         GoRoute(
           path: RoutePath.detail,
           name: RouteName.detail,
-          builder: (context, state) => const MovieDetailScreen(),
-        )
-      ]
+          builder: (context, state) => MovieDetailScreen(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
+      ],
     )
   ],
 );

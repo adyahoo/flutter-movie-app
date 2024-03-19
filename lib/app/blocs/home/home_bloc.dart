@@ -16,7 +16,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc({required this.homeRepository}) : super(HomeState.initial()) {
     on<GetPopularEvent>((event, emit) async {
-      state.copyWith(popular: const ApiResultStates(status: ApiResultStatus.loading));
+      emit(state.copyWith(popular: const ApiResultStates(status: ApiResultStatus.loading)));
 
       try {
         final res = await homeRepository.getPopularMovie();
@@ -36,7 +36,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<GetNowPlayingEvent>((event, emit) async {
-      state.copyWith(popular: const ApiResultStates(status: ApiResultStatus.loading));
+      emit(state.copyWith(popular: const ApiResultStates(status: ApiResultStatus.loading)));
 
       try {
         final res = await homeRepository.getNowPlayingMovie();

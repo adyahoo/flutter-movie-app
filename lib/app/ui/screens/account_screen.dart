@@ -138,7 +138,7 @@ class _AccountScreenState extends State<AccountScreen> {
       );
     }
 
-    final AccountModel account = state.profile.data;
+    final AccountModel? account = state.profile.data;
 
     return Row(
       children: [
@@ -146,11 +146,11 @@ class _AccountScreenState extends State<AccountScreen> {
           width: 40,
           height: 40,
           decoration: ShapeDecoration(shape: const CircleBorder(side: BorderSide(width: 2, color: Colors.white)), color: SecondaryColor.main),
-          child: (account.avatar != null)
-              ? Image.network(Constants.IMAGE_BASE_URL + account.avatar!)
+          child: (account?.avatar != null)
+              ? Image.network(Constants.IMAGE_BASE_URL + account!.avatar.toString())
               : Center(
                   child: Text(
-                    account.username[0].toUpperCase(),
+                    account!.username[0].toUpperCase(),
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Colors.white),
                   ),
                 ),

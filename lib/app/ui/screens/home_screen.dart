@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:go_router/go_router.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/blocs/home/home_bloc.dart';
 import 'package:movie_app/app/data/models/movie_model.dart';
@@ -132,7 +131,12 @@ Widget _renderSection(BuildContext context, String title, ApiResultStates<List<M
 }
 
 void _navigateDetail(int id) {
-  goRouter.pushNamed(RouteName.detail);
+  goRouter.pushNamed(
+    RouteName.detail,
+    pathParameters: {
+      "id": id.toString(),
+    },
+  );
 }
 
 Widget _renderLatestSection(BuildContext context, ApiResultStates<List<MovieModel>> data) {

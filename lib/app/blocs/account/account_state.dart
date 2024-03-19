@@ -5,12 +5,12 @@ class AccountState extends Equatable {
     required this.profile,
   });
 
-  final ApiResultStates profile;
+  final ApiResultStates<AccountModel> profile;
 
   factory AccountState.initial() => const AccountState(profile: ApiResultStates(status: ApiResultStatus.init));
 
   AccountState copyWith({
-    ApiResultStates? profile,
+    ApiResultStates<AccountModel>? profile,
   }) {
     return AccountState(
       profile: profile ?? this.profile,

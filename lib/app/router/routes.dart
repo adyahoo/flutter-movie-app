@@ -3,7 +3,7 @@ class RoutePath {
   static const welcome = "/welcome";
   static const login = "login";
   static const mainTab = "/main_tab";
-  static const detail = "detail";
+  static const detail = "detail/:id";
 }
 
 class RouteName {
