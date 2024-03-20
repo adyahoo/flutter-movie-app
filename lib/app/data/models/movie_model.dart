@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 class MovieModel extends Equatable {
   const MovieModel({required this.id, required this.title, required this.poster, required this.releaseDate, required this.overview});
@@ -31,6 +32,7 @@ class MovieDetailModel extends Equatable {
     required this.runtime,
     required this.voteAverage,
     required this.voteCount,
+    required this.country,
   });
 
   final int id;
@@ -41,6 +43,7 @@ class MovieDetailModel extends Equatable {
   final int runtime;
   final double voteAverage;
   final int voteCount;
+  final String country;
 
   String get genre => listGenres.map((e) => e.name).join(", ");
 
@@ -48,6 +51,20 @@ class MovieDetailModel extends Equatable {
     final date = DateTime.parse(releaseDate);
 
     return date.year.toString();
+  }
+
+  String get description {
+    final releaseDate = DateTime.parse(this.releaseDate);
+    final date = DateFormat("dd/MM/yyyy").format(releaseDate);
+
+    return date.toString();
+  }
+
+  String get duration {
+    final hour = runtime / 60;
+    final minutes = runtime % 60;
+
+    return "${hour.floor()}h ${minutes}m";
   }
 
   factory MovieDetailModel.fromJson(Map<String, dynamic> map) {
@@ -60,11 +77,32 @@ class MovieDetailModel extends Equatable {
       runtime: map['runtime'],
       voteAverage: map['vote_average'],
       voteCount: map['vote_count'],
+      country: MovieProductionCountryModel.fromJson((map['production_countries'] as Iterable).first).country,
     );
   }
 
   @override
-  List<Object> get props => [id, title, listGenres, overview, releaseDate, runtime, voteAverage, voteCount];
+  List<Object> get props => [id, title, listGenres, overview, releaseDate, runtime, voteAverage, voteCount, country];
+}
+
+class MovieProductionCountryModel extends Equatable {
+  const MovieProductionCountryModel({
+    required this.country,
+    required this.name,
+  });
+
+  final String country;
+  final String name;
+
+  factory MovieProductionCountryModel.fromJson(Map<String, dynamic> map) {
+    return MovieProductionCountryModel(
+      country: map['iso_3166_1'],
+      name: map['name'],
+    );
+  }
+
+  @override
+  List<Object> get props => [country, name];
 }
 
 class MovieGenreModel extends Equatable {
@@ -106,6 +144,98 @@ class MovieTrailerModel extends Equatable {
 
   @override
   List<Object?> get props => [id, type, key];
+}
+
+class MovieCreditModel extends Equatable {
+  const MovieCreditModel({
+    required this.cast,
+    required this.crew,
+  });
+
+  final List<CastModel> cast;
+  final List<CrewModel> crew;
+
+  String get director => _filterCrew("Director");
+  String get screenplay => _filterCrew("Screenplay");
+  String get character => _filterCrew("Characters");
+
+  String _filterCrew(String job) {
+    final data = crew.where((e) => e.job == job).toList();
+
+    if (data.isNotEmpty) {
+      return data.map((e) => e.name).join(", ");
+    } else {
+      return "-";
+    }
+  }
+
+  factory MovieCreditModel.fromJson(Map<String, dynamic> map) {
+    return MovieCreditModel(
+      cast: (map['cast'] as Iterable).map((e) => CastModel.fromJson(e)).toList(),
+      crew: (map['crew'] as Iterable).map((e) => CrewModel.fromJson(e)).toList(),
+    );
+  }
+
+  @override
+  List<Object> get props => [cast, crew];
+}
+
+class CrewModel extends Equatable {
+  const CrewModel({
+    required this.id,
+    required this.name,
+    required this.department,
+    required this.job,
+    this.profilePicture,
+  });
+
+  final int id;
+  final String name;
+  final String department;
+  final String job;
+  final String? profilePicture;
+
+  factory CrewModel.fromJson(Map<String, dynamic> map) {
+    return CrewModel(
+      id: map['id'],
+      name: map['original_name'],
+      profilePicture: map['profile_path'],
+      department: map['known_for_department'],
+      job: map['job'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, profilePicture, department, job];
+}
+
+class CastModel extends Equatable {
+  const CastModel({
+    required this.id,
+    required this.name,
+    required this.department,
+    required this.character,
+    this.profilePicture,
+  });
+
+  final int id;
+  final String name;
+  final String department;
+  final String character;
+  final String? profilePicture;
+
+  factory CastModel.fromJson(Map<String, dynamic> map) {
+    return CastModel(
+      id: map['id'],
+      name: map['original_name'],
+      profilePicture: map['profile_path'],
+      department: map['known_for_department'],
+      character: map['character'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, profilePicture, department, character];
 }
 
 class MovieImagesModel extends Equatable {

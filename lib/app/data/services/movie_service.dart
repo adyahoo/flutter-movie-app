@@ -32,4 +32,14 @@ class MovieService {
       return MovieDetailModel.fromJson(res.data);
     });
   }
+
+  Future<MovieCreditModel> getMovieCredit(int id) async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("movie/$id/credits");
+
+        return MovieCreditModel.fromJson(res.data);
+      }
+    );
+  }
 }

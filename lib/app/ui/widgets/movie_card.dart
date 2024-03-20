@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_app/app/data/models/movie_model.dart';
@@ -32,8 +33,8 @@ class MovieCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.network(
-                "${Constants.IMAGE_BASE_URL}${movie.poster}",
+              CachedNetworkImage(
+                imageUrl: "${Constants.IMAGE_BASE_URL}${movie.poster}",
                 width: double.infinity,
                 height: 180,
                 fit: BoxFit.cover,
@@ -90,8 +91,8 @@ class UpcomingMovieCard extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Stack(
               children: [
-                Image.network(
-                  "${Constants.IMAGE_BASE_URL}${movie.poster}",
+                CachedNetworkImage(
+                  imageUrl: "${Constants.IMAGE_BASE_URL}${movie.poster}",
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

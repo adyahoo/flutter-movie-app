@@ -1,26 +1,38 @@
 part of 'movie_detail_bloc.dart';
 
 class MovieDetailState extends Equatable {
-  const MovieDetailState({required this.backdrops, required this.detail});
+  const MovieDetailState({this.backdrops, this.detail, this.credit, required this.status, this.error});
 
-  final ApiResultStates<List<ImageModel>> backdrops;
-  final ApiResultStates<MovieDetailModel> detail;
+  final ApiResultStatus status;
+  final ApiException? error;
+  final List<ImageModel>? backdrops;
+  final MovieDetailModel? detail;
+  final MovieCreditModel? credit;
 
   factory MovieDetailState.initial() => const MovieDetailState(
-        backdrops: ApiResultStates(status: ApiResultStatus.init),
-        detail: ApiResultStates(status: ApiResultStatus.init),
+        status: ApiResultStatus.init,
+        detail: null,
+        backdrops: null,
+        credit: null,
+        error: null,
       );
 
   MovieDetailState copyWith({
-    ApiResultStates<List<ImageModel>>? backdrops,
-    ApiResultStates<MovieDetailModel>? detail,
+    ApiResultStatus? status,
+    ApiException? error,
+    List<ImageModel>? backdrops,
+    MovieDetailModel? detail,
+    MovieCreditModel? credit,
   }) {
     return MovieDetailState(
+      status: status ?? this.status,
+      error: error ?? this.error,
       backdrops: backdrops ?? this.backdrops,
       detail: detail ?? this.detail,
+      credit: credit ?? this.credit,
     );
   }
 
   @override
-  List<Object?> get props => [backdrops];
+  List<Object?> get props => [status, error, backdrops, detail, credit];
 }

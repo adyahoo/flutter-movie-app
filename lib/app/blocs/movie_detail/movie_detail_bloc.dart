@@ -15,40 +15,27 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
   final MovieRepository movieRepository;
 
   MovieDetailBloc({required this.movieRepository}) : super(MovieDetailState.initial()) {
-    on<GetMovieImagesEvent>((event, emit) async {
-      emit(state.copyWith(
-        backdrops: const ApiResultStates(status: ApiResultStatus.loading),
-      ));
+    on<FetchData>((event, emit) async {
+      emit(state.copyWith(status: ApiResultStatus.loading));
 
       try {
-        final res = await movieRepository.getMovieImages(event.id);
-        final backdrops = res.backdrops.take(6).toList();
+        final detail = await movieRepository.getMovieDetail(event.id);
+
+        final images = await movieRepository.getMovieImages(event.id);
+        final backdrops = images.backdrops.take(6).toList();
+
+        final credit = await movieRepository.getMovieCredit(event.id);
 
         emit(
           state.copyWith(
-            backdrops: ApiResultStates(status: ApiResultStatus.success, data: backdrops),
+            status: ApiResultStatus.success,
+            detail: detail,
+            backdrops: backdrops,
+            credit: credit,
           ),
         );
       } on ApiException catch (e) {
-        emit(state.copyWith(backdrops: ApiResultStates(status: ApiResultStatus.error, error: e)));
-        errorHandler(e);
-      }
-    });
-
-    on<GetMovieDetailEvent>((event, emit) async {
-      emit(state.copyWith(detail: const ApiResultStates(status: ApiResultStatus.loading)));
-
-      try {
-        final res = await movieRepository.getMovieDetail(event.id);
-
-        emit(
-          state.copyWith(
-            detail: ApiResultStates(status: ApiResultStatus.success, data: res),
-          ),
-        );
-      } on ApiException catch (e) {
-        emit(state.copyWith(detail: ApiResultStates(status: ApiResultStatus.error, error: e)));
-        errorHandler(e);
+        emit(state.copyWith(status: ApiResultStatus.error, error: e));
       }
     });
   }

@@ -36,4 +36,14 @@ class MovieRepository {
       rethrow;
     }
   }
+
+  Future<MovieCreditModel> getMovieCredit(int id) async {
+    try {
+      final res = await _movieService.getMovieCredit(id);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
