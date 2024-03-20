@@ -33,6 +33,7 @@ class MovieDetailModel extends Equatable {
     required this.voteAverage,
     required this.voteCount,
     required this.country,
+    required this.poster,
   });
 
   final int id;
@@ -44,6 +45,7 @@ class MovieDetailModel extends Equatable {
   final double voteAverage;
   final int voteCount;
   final String country;
+  final String poster;
 
   String get genre => listGenres.map((e) => e.name).join(", ");
 
@@ -78,11 +80,12 @@ class MovieDetailModel extends Equatable {
       voteAverage: map['vote_average'],
       voteCount: map['vote_count'],
       country: MovieProductionCountryModel.fromJson((map['production_countries'] as Iterable).first).country,
+      poster: map['poster_path']
     );
   }
 
   @override
-  List<Object> get props => [id, title, listGenres, overview, releaseDate, runtime, voteAverage, voteCount, country];
+  List<Object> get props => [id, title, listGenres, overview, releaseDate, runtime, voteAverage, voteCount, country, poster];
 }
 
 class MovieProductionCountryModel extends Equatable {

@@ -1,12 +1,16 @@
+import 'dart:ui';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/blocs/movie_detail/movie_detail_bloc.dart';
 import 'package:movie_app/app/router/router.dart';
 import 'package:movie_app/app/ui/widgets/movie_button.dart';
 import 'package:movie_app/app/ui/widgets/shimmer/shimmer_container.dart';
+import 'package:movie_app/main.dart';
 import 'package:movie_app/utils/app_color.dart';
 import 'package:movie_app/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -36,6 +40,105 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   bool isExpandedOverview = false;
+
+  void _showRateBS(String poster) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Color.fromARGB(1, 255, 255, 255),
+      builder: (context) {
+        return BottomSheet(
+          onClosing: () {},
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          backgroundColor: Colors.white,
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    top: -150,
+                    right: 0,
+                    left: 0,
+                    child: Center(
+                      child: Container(
+                        width: 140,
+                        height: 210,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider("${Constants.IMAGE_BASE_URL}$poster"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 100),
+                      Text(
+                        "How would you rate Sonic Hedgehog?",
+                        style: Theme.of(context).textTheme.displayMedium?.copyWith(color: TextColor.primary),
+                      ),
+                      const SizedBox(height: 16),
+                      RatingBar(
+                        initialRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                        onRatingUpdate: (value) {
+                          print("sapi bintang $value");
+                        },
+                        ratingWidget: RatingWidget(
+                          full: Image.asset(
+                            "assets/images/ic_star_movie.png",
+                            color: const Color(0xFFF2C94C),
+                          ),
+                          half: Image.asset(
+                            "assets/images/ic_star_movie_half.png",
+                            color: const Color(0xFFF2C94C),
+                            width: 40,
+                            height: 40,
+                          ),
+                          empty: Image.asset(
+                            "assets/images/ic_star_movie_gray.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      MovieButton.filled(
+                        text: "Rate",
+                        isLoading: false,
+                        onPress: () {},
+                      ),
+                      const SizedBox(height: 12),
+                      MovieButton.outline(
+                        text: "Cancel",
+                        isLoading: false,
+                        onPress: () {
+                          goRouter.pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,15 +240,17 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                 text: overview,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
                               ),
-                              TextSpan(
-                                  text: (isExpandedOverview) ? " See Less" : "...See More",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      setState(() {
-                                        isExpandedOverview = !isExpandedOverview;
-                                      });
-                                    })
+                              (overview.length >= 250)
+                                  ? TextSpan(
+                                      text: (isExpandedOverview) ? " See Less" : "...See More",
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          setState(() {
+                                            isExpandedOverview = !isExpandedOverview;
+                                          });
+                                        })
+                                  : const TextSpan()
                             ]),
                           ),
                         ),
@@ -187,7 +292,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                           child: MovieButton.outline(
                             text: "Rate",
                             isLoading: false,
-                            onPress: () {},
+                            onPress: () {
+                              _showRateBS(detail.poster);
+                            },
                             size: MovieButtonSize.small,
                           ),
                         ),
@@ -196,24 +303,25 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   ),
                   Container(height: 6, color: OtherColor.lineDivider),
                   //Section Cast
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
-                        const SizedBox(height: 16),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 280),
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
-                            separatorBuilder: (context, index) => const SizedBox(width: 12),
-                            itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, left: 16),
+                        child: Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
+                      ),
+                      const SizedBox(height: 16),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 280),
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
+                          separatorBuilder: (context, index) => const SizedBox(width: 12),
+                          itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ]),
               ),
