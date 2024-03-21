@@ -47,7 +47,11 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<AccountBloc>(create: (context) => AccountBloc(accountRepository: inject())),
         BlocProvider<HomeBloc>(create: (context) => HomeBloc(homeRepository: inject())),
-        BlocProvider<MovieDetailBloc>(create: (context) => MovieDetailBloc(movieRepository: inject())),
+        BlocProvider<MovieDetailBloc>(
+          create: (context) => MovieDetailBloc(
+            movieRepository: inject(),
+          ),
+        ),
       ],
       child: LocalizationProvider(
         state: LocalizationProvider.of(context).state,

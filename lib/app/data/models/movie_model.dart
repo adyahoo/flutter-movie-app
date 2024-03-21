@@ -71,17 +71,16 @@ class MovieDetailModel extends Equatable {
 
   factory MovieDetailModel.fromJson(Map<String, dynamic> map) {
     return MovieDetailModel(
-      id: map['id'],
-      title: map['original_title'],
-      listGenres: (map['genres'] as Iterable).map((e) => MovieGenreModel.fromJson(e)).toList(),
-      overview: map['overview'],
-      releaseDate: map['release_date'],
-      runtime: map['runtime'],
-      voteAverage: map['vote_average'],
-      voteCount: map['vote_count'],
-      country: MovieProductionCountryModel.fromJson((map['production_countries'] as Iterable).first).country,
-      poster: map['poster_path']
-    );
+        id: map['id'],
+        title: map['original_title'],
+        listGenres: (map['genres'] as Iterable).map((e) => MovieGenreModel.fromJson(e)).toList(),
+        overview: map['overview'],
+        releaseDate: map['release_date'],
+        runtime: map['runtime'],
+        voteAverage: map['vote_average'],
+        voteCount: map['vote_count'],
+        country: MovieProductionCountryModel.fromJson((map['production_countries'] as Iterable).first).country,
+        poster: map['poster_path']);
   }
 
   @override
@@ -159,7 +158,9 @@ class MovieCreditModel extends Equatable {
   final List<CrewModel> crew;
 
   String get director => _filterCrew("Director");
+
   String get screenplay => _filterCrew("Screenplay");
+
   String get character => _filterCrew("Characters");
 
   String _filterCrew(String job) {
@@ -278,4 +279,21 @@ class ImageModel extends Equatable {
 
   @override
   List<Object?> get props => [path, aspectRatio];
+}
+
+class AccountStatesModel extends Equatable {
+  const AccountStatesModel({required this.favorite, required this.rated});
+
+  final bool favorite;
+  final dynamic rated;
+
+  factory AccountStatesModel.fromJson(Map<String, dynamic> map) {
+    return AccountStatesModel(
+      favorite: map['favorite'],
+      rated: (map['rated'] is bool) ? map['rated'] : map['rated']['value'],
+    );
+  }
+
+  @override
+  List<Object> get props => [favorite, rated];
 }

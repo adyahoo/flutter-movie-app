@@ -27,11 +27,12 @@ class GetMovieImagesEvent extends MovieDetailEvent {
   List<Object?> get props => [id];
 }
 
-class GetMovieDetailEvent extends MovieDetailEvent {
-  const GetMovieDetailEvent({required this.id});
+class MovieRatingAdded extends MovieDetailEvent {
+  const MovieRatingAdded({required this.id, required this.rateValue});
 
   final int id;
+  final double rateValue;
 
   @override
-  List<Object?> get props => [id];
+  List<Object> get props => [id, rateValue];
 }

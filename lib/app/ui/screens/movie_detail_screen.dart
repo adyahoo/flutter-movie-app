@@ -41,103 +41,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   bool isExpandedOverview = false;
 
-  void _showRateBS(String poster) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Color.fromARGB(1, 255, 255, 255),
-      builder: (context) {
-        return BottomSheet(
-          onClosing: () {},
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          backgroundColor: Colors.white,
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned(
-                    top: -150,
-                    right: 0,
-                    left: 0,
-                    child: Center(
-                      child: Container(
-                        width: 140,
-                        height: 210,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider("${Constants.IMAGE_BASE_URL}$poster"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 100),
-                      Text(
-                        "How would you rate Sonic Hedgehog?",
-                        style: Theme.of(context).textTheme.displayMedium?.copyWith(color: TextColor.primary),
-                      ),
-                      const SizedBox(height: 16),
-                      RatingBar(
-                        initialRating: 0,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-                        onRatingUpdate: (value) {
-                          print("sapi bintang $value");
-                        },
-                        ratingWidget: RatingWidget(
-                          full: Image.asset(
-                            "assets/images/ic_star_movie.png",
-                            color: const Color(0xFFF2C94C),
-                          ),
-                          half: Image.asset(
-                            "assets/images/ic_star_movie_half.png",
-                            color: const Color(0xFFF2C94C),
-                            width: 40,
-                            height: 40,
-                          ),
-                          empty: Image.asset(
-                            "assets/images/ic_star_movie_gray.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      MovieButton.filled(
-                        text: "Rate",
-                        isLoading: false,
-                        onPress: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      MovieButton.outline(
-                        text: "Cancel",
-                        isLoading: false,
-                        onPress: () {
-                          goRouter.pop();
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+  void doAddRating(double value) {
+    _movieDetailBloc.add(MovieRatingAdded(id: widget.id!, rateValue: value));
   }
 
   @override
@@ -145,7 +50,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     return Scaffold(
       body: BlocConsumer<MovieDetailBloc, MovieDetailState>(
         listener: (context, state) {
-          if (state.status == ApiResultStatus.error) {
+          if (state.status == ApiResultStatus.error || state.rateStatus == ApiResultStatus.error) {
             errorHandler(state.error!);
           }
         },
@@ -157,6 +62,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           final detail = state.detail!;
           final backdrops = state.backdrops!;
           final credit = state.credit!;
+          final accountState = state.accountState!;
 
           String overview = detail.overview;
 
@@ -174,156 +80,163 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             slivers: [
               _renderCarouselAppBar(backdrops, detail),
               SliverList(
-                delegate: SliverChildListDelegate([
-                  //Section Overview
-                  Padding(
-                    padding: const EdgeInsets.only(top: 14, right: 16, bottom: 16, left: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "${detail.title} (${detail.year})",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            InkWell(
-                              child: Icon(
-                                Icons.favorite_border_rounded,
-                                size: 22,
-                                color: TextColor.secondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${detail.description} (${detail.country}) - ${detail.duration}",
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                            ),
-                            Container(
-                              width: 4,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                                color: OtherColor.dot,
-                              ),
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                            ),
-                            Expanded(
-                              child: Text(
-                                detail.genre,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Overview",
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
-                        ),
-                        const SizedBox(height: 4),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(),
-                          child: RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                text: overview,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                              ),
-                              (overview.length >= 250)
-                                  ? TextSpan(
-                                      text: (isExpandedOverview) ? " See Less" : "...See More",
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          setState(() {
-                                            isExpandedOverview = !isExpandedOverview;
-                                          });
-                                        })
-                                  : const TextSpan()
-                            ]),
-                          ),
-                        ),
-                        _renderTeam("Director", credit.director),
-                        _renderTeam("Characters", credit.character),
-                        _renderTeam("Screenplay", credit.screenplay),
-                      ],
-                    ),
-                  ),
-                  Container(height: 6, color: OtherColor.lineDivider),
-                  //Section Rating
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(24), color: PrimaryColor.light),
-                          child: Image.asset(
-                            "assets/images/ic_star_movie.png",
-                            width: 32,
-                            height: 32,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                delegate: SliverChildListDelegate(
+                  [
+                    //Section Overview
+                    Padding(
+                      padding: const EdgeInsets.only(top: 14, right: 16, bottom: 16, left: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Text("${detail.voteAverage.toStringAsFixed(2)} Star", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black)),
-                              const SizedBox(height: 4),
-                              Text("Total Vote : ${detail.voteCount}", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary)),
+                              Expanded(
+                                child: Text(
+                                  "${detail.title} (${detail.year})",
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              InkWell(
+                                child: Icon(
+                                  (accountState.favorite) ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                  size: 22,
+                                  color: (accountState.favorite) ? Colors.red : TextColor.secondary,
+                                ),
+                              ),
                             ],
                           ),
+                          const SizedBox(height: 8),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${detail.description} (${detail.country}) - ${detail.duration}",
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                              ),
+                              Container(
+                                width: 4,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  color: OtherColor.dot,
+                                ),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  detail.genre,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Overview",
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
+                          ),
+                          const SizedBox(height: 4),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(),
+                            child: RichText(
+                              text: TextSpan(children: [
+                                TextSpan(
+                                  text: overview,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                                ),
+                                (overview.length >= 250)
+                                    ? TextSpan(
+                                        text: (isExpandedOverview) ? " See Less" : "...See More",
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            setState(() {
+                                              isExpandedOverview = !isExpandedOverview;
+                                            });
+                                          })
+                                    : const TextSpan()
+                              ]),
+                            ),
+                          ),
+                          _renderTeam("Director", credit.director),
+                          _renderTeam("Characters", credit.character),
+                          _renderTeam("Screenplay", credit.screenplay),
+                        ],
+                      ),
+                    ),
+                    Container(height: 6, color: OtherColor.lineDivider),
+                    //Section Rating
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(24), color: PrimaryColor.light),
+                            child: Image.asset(
+                              "assets/images/ic_star_movie.png",
+                              width: 32,
+                              height: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${detail.voteAverage.toStringAsFixed(2)} Star", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black)),
+                                const SizedBox(height: 4),
+                                Text("Total Vote : ${detail.voteCount}", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: MovieButton.outline(
+                              text: (accountState.rated is bool) ? "Rate" : "Rated ${accountState.rated}",
+                              isLoading: (state.rateStatus == ApiResultStatus.loading),
+                              onPress: () {
+                                showRateBS(
+                                  context,
+                                  poster: detail.poster,
+                                  initialRate: (accountState.rated is bool) ? 0 : accountState.rated,
+                                  onRateClicked: doAddRating,
+                                );
+                              },
+                              size: MovieButtonSize.small,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(height: 6, color: OtherColor.lineDivider),
+                    //Section Cast
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16, left: 16),
+                          child: Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: MovieButton.outline(
-                            text: "Rate",
-                            isLoading: false,
-                            onPress: () {
-                              _showRateBS(detail.poster);
-                            },
-                            size: MovieButtonSize.small,
+                        const SizedBox(height: 16),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 280),
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
+                            separatorBuilder: (context, index) => const SizedBox(width: 12),
+                            itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Container(height: 6, color: OtherColor.lineDivider),
-                  //Section Cast
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16, left: 16),
-                        child: Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
-                      ),
-                      const SizedBox(height: 16),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 280),
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
-                          separatorBuilder: (context, index) => const SizedBox(width: 12),
-                          itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ]),
+                  ],
+                ),
               ),
             ],
           );

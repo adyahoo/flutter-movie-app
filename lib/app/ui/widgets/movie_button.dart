@@ -66,9 +66,7 @@ class MovieButton extends StatelessWidget {
         side: (type == MovieButtonType.outline) ? BorderSide(color: (onPress != null) ? SecondaryColor.main : NeutralColor.neutral50, width: 1) : BorderSide.none,
       );
 
-  EdgeInsetsGeometry get padding => (size == MovieButtonSize.normal)
-      ? const EdgeInsets.symmetric(vertical: 12, horizontal: 32)
-      : const EdgeInsets.symmetric(vertical: 8, horizontal: 32);
+  EdgeInsetsGeometry get padding => (size == MovieButtonSize.normal) ? const EdgeInsets.symmetric(vertical: 12, horizontal: 32) : const EdgeInsets.symmetric(vertical: 8, horizontal: 32);
 
   TextStyle getTextStyle(BuildContext context) => (size == MovieButtonSize.normal) ? Theme.of(context).textTheme.titleMedium! : Theme.of(context).textTheme.bodyMedium!;
 
@@ -114,7 +112,7 @@ class MovieButton extends StatelessWidget {
         disabledBackgroundColor: disabledBgColor,
         disabledForegroundColor: disabledTextColor,
       ),
-      onPressed: onPress,
+      onPressed: (isLoading) ? null : onPress,
       child: _buildContent(),
     );
   }

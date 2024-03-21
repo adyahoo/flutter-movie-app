@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:movie_app/app/data/client/client.dart';
 
+import '../models/api_model.dart';
 import '../models/movie_model.dart';
 
 class MovieService {
@@ -42,5 +43,23 @@ class MovieService {
       }
     );
   }
-  
+
+  Future<ApiResponse> addRating(int id, double rating) async {
+    return clientExecutor(execute: () async {
+      final body = {
+        "value": rating
+      };
+      final res = await client.post("movie/$id/rating", data: body);
+
+      return ApiResponse.fromJson(res.data);
+    });
+  }
+
+  Future<AccountStatesModel> getAccountStates(int id) async {
+    return clientExecutor(execute: () async {
+      final res = await client.get("movie/$id/account_states");
+
+      return AccountStatesModel.fromJson(res.data);
+    },);
+  }
 }
