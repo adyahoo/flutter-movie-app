@@ -51,6 +51,7 @@ void hideLoading(BuildContext context) {
 
 void showRateBS(
   BuildContext context, {
+  required String title,
   required String poster,
   required double initialRate,
   required Function(double value) onRateClicked,
@@ -99,7 +100,7 @@ void showRateBS(
                   children: [
                     const SizedBox(height: 100),
                     Text(
-                      "How would you rate Sonic Hedgehog?",
+                      "How would you rate $title?",
                       style: Theme.of(context).textTheme.displayMedium?.copyWith(color: TextColor.primary),
                     ),
                     const SizedBox(height: 16),

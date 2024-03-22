@@ -4,6 +4,7 @@ class RoutePath {
   static const login = "login";
   static const mainTab = "/main_tab";
   static const detail = "detail/:id";
+  static const ratingFavorite = "rating_favorite/:type";
 }
 
 class RouteName {
@@ -12,4 +13,5 @@ class RouteName {
   static const login = "login";
   static const mainTab = "main_tab";
   static const detail = "detail";
+  static const ratingFavorite = "rating_favorite";
 }

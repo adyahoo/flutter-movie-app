@@ -5,8 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:movie_app/app/blocs/account/account_bloc.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/blocs/movie_detail/movie_detail_bloc.dart';
+import 'package:movie_app/app/data/models/account_model.dart';
 import 'package:movie_app/app/router/router.dart';
 import 'package:movie_app/app/ui/widgets/movie_button.dart';
 import 'package:movie_app/app/ui/widgets/shimmer/shimmer_container.dart';
@@ -19,9 +21,9 @@ import 'package:movie_app/utils/utilities.dart';
 import '../../data/models/movie_model.dart';
 
 class MovieDetailScreen extends StatefulWidget {
-  const MovieDetailScreen({super.key, this.id});
+  const MovieDetailScreen({super.key, required this.id});
 
-  final int? id;
+  final int id;
 
   @override
   State<MovieDetailScreen> createState() => _MovieDetailScreenState();
@@ -29,12 +31,14 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
   late MovieDetailBloc _movieDetailBloc;
+  late AccountBloc _accountBloc;
 
   @override
   void initState() {
     _movieDetailBloc = context.read<MovieDetailBloc>();
+    _accountBloc = context.read<AccountBloc>();
 
-    _movieDetailBloc.add(FetchData(id: widget.id ?? 0));
+    _movieDetailBloc.add(FetchData(id: widget.id));
 
     super.initState();
   }
@@ -42,205 +46,229 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   bool isExpandedOverview = false;
 
   void doAddRating(double value) {
-    _movieDetailBloc.add(MovieRatingAdded(id: widget.id!, rateValue: value));
+    _movieDetailBloc.add(MovieRatingAdded(id: widget.id, rateValue: value));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<MovieDetailBloc, MovieDetailState>(
-        listener: (context, state) {
-          if (state.status == ApiResultStatus.error || state.rateStatus == ApiResultStatus.error) {
-            errorHandler(state.error!);
-          }
-        },
-        builder: (context, state) {
-          if (state.status == ApiResultStatus.init || state.status == ApiResultStatus.loading) {
-            return _renderShimmer();
-          }
-
-          final detail = state.detail!;
-          final backdrops = state.backdrops!;
-          final credit = state.credit!;
-          final accountState = state.accountState!;
-
-          String overview = detail.overview;
-
-          if (!isExpandedOverview) {
-            if (overview.length >= 250) {
-              overview = overview.substring(0, 250);
-            } else {
-              overview = overview.substring(0, overview.length);
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<MovieDetailBloc, MovieDetailState>(
+            listener: (context, state) {
+              if (state.status == ApiResultStatus.error || state.rateStatus == ApiResultStatus.error) {
+                errorHandler(state.error!);
+              }
+            },
+          ),
+          BlocListener<AccountBloc, AccountState>(
+            listener: (context, state) {
+              if (state.favoriteStatus == ApiResultStatus.loading) {
+                showLoading(context);
+              } else if (state.favoriteStatus == ApiResultStatus.error) {
+                hideLoading(context);
+                errorHandler(state.error!);
+              } else {
+                _movieDetailBloc.add(FavoriteToggled());
+                hideLoading(context);
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<MovieDetailBloc, MovieDetailState>(
+          builder: (context, state) {
+            if (state.status == ApiResultStatus.init || state.status == ApiResultStatus.loading) {
+              return _renderShimmer();
             }
-          } else {
-            overview = overview;
-          }
 
-          return CustomScrollView(
-            slivers: [
-              _renderCarouselAppBar(backdrops, detail),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    //Section Overview
-                    Padding(
-                      padding: const EdgeInsets.only(top: 14, right: 16, bottom: 16, left: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "${detail.title} (${detail.year})",
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              InkWell(
-                                child: Icon(
-                                  (accountState.favorite) ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                  size: 22,
-                                  color: (accountState.favorite) ? Colors.red : TextColor.secondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "${detail.description} (${detail.country}) - ${detail.duration}",
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                              ),
-                              Container(
-                                width: 4,
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(2),
-                                  color: OtherColor.dot,
-                                ),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  detail.genre,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            "Overview",
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
-                          ),
-                          const SizedBox(height: 4),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(),
-                            child: RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                  text: overview,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                                ),
-                                (overview.length >= 250)
-                                    ? TextSpan(
-                                        text: (isExpandedOverview) ? " See Less" : "...See More",
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            setState(() {
-                                              isExpandedOverview = !isExpandedOverview;
-                                            });
-                                          })
-                                    : const TextSpan()
-                              ]),
-                            ),
-                          ),
-                          _renderTeam("Director", credit.director),
-                          _renderTeam("Characters", credit.character),
-                          _renderTeam("Screenplay", credit.screenplay),
-                        ],
-                      ),
-                    ),
-                    Container(height: 6, color: OtherColor.lineDivider),
-                    //Section Rating
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(24), color: PrimaryColor.light),
-                            child: Image.asset(
-                              "assets/images/ic_star_movie.png",
-                              width: 32,
-                              height: 32,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+            final detail = state.detail!;
+            final backdrops = state.backdrops!;
+            final credit = state.credit!;
+            final accountState = state.accountState!;
+
+            String overview = detail.overview;
+
+            if (!isExpandedOverview) {
+              if (overview.length >= 250) {
+                overview = overview.substring(0, 250);
+              } else {
+                overview = overview.substring(0, overview.length);
+              }
+            } else {
+              overview = overview;
+            }
+
+            return CustomScrollView(
+              slivers: [
+                _renderCarouselAppBar(backdrops, detail),
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      //Section Overview
+                      Padding(
+                        padding: const EdgeInsets.only(top: 14, right: 16, bottom: 16, left: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Text("${detail.voteAverage.toStringAsFixed(2)} Star", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black)),
-                                const SizedBox(height: 4),
-                                Text("Total Vote : ${detail.voteCount}", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary)),
+                                Expanded(
+                                  child: Text(
+                                    "${detail.title} (${detail.year})",
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                InkWell(
+                                  onTap: () {
+                                    final body = AddFavoriteModel(movieId: detail.id, isFavorite: !accountState.favorite);
+                                    _accountBloc.add(FavoriteMovieAdded(body: body));
+                                  },
+                                  child: Icon(
+                                    (accountState.favorite) ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                    size: 22,
+                                    color: (accountState.favorite) ? Colors.red : TextColor.secondary,
+                                  ),
+                                ),
                               ],
                             ),
+                            const SizedBox(height: 8),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${detail.description} (${detail.country}) - ${detail.duration}",
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                                ),
+                                Container(
+                                  width: 4,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: OtherColor.dot,
+                                  ),
+                                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    detail.genre,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "Overview",
+                              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
+                            ),
+                            const SizedBox(height: 4),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(),
+                              child: RichText(
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                    text: overview,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                                  ),
+                                  (overview.length >= 250)
+                                      ? TextSpan(
+                                          text: (isExpandedOverview) ? " See Less" : "...See More",
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: SecondaryColor.main),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              setState(() {
+                                                isExpandedOverview = !isExpandedOverview;
+                                              });
+                                            })
+                                      : const TextSpan()
+                                ]),
+                              ),
+                            ),
+                            _renderTeam("Director", credit.director),
+                            _renderTeam("Characters", credit.character),
+                            _renderTeam("Screenplay", credit.screenplay),
+                          ],
+                        ),
+                      ),
+                      Container(height: 6, color: OtherColor.lineDivider),
+                      //Section Rating
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(24), color: PrimaryColor.light),
+                              child: Image.asset(
+                                "assets/images/ic_star_movie.png",
+                                width: 32,
+                                height: 32,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${detail.voteAverage.toStringAsFixed(2)} Star", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black)),
+                                  const SizedBox(height: 4),
+                                  Text("Total Vote : ${detail.voteCount}", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: MovieButton.outline(
+                                text: (accountState.rated is bool) ? "Rate" : "Rated ${accountState.rated}",
+                                isLoading: (state.rateStatus == ApiResultStatus.loading),
+                                onPress: () {
+                                  showRateBS(
+                                    context,
+                                    title: detail.title,
+                                    poster: detail.poster,
+                                    initialRate: (accountState.rated is bool) ? 0 : accountState.rated,
+                                    onRateClicked: doAddRating,
+                                  );
+                                },
+                                size: MovieButtonSize.small,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(height: 6, color: OtherColor.lineDivider),
+                      //Section Cast
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16, left: 16),
+                            child: Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: MovieButton.outline(
-                              text: (accountState.rated is bool) ? "Rate" : "Rated ${accountState.rated}",
-                              isLoading: (state.rateStatus == ApiResultStatus.loading),
-                              onPress: () {
-                                showRateBS(
-                                  context,
-                                  poster: detail.poster,
-                                  initialRate: (accountState.rated is bool) ? 0 : accountState.rated,
-                                  onRateClicked: doAddRating,
-                                );
-                              },
-                              size: MovieButtonSize.small,
+                          const SizedBox(height: 16),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxHeight: 280),
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
+                              separatorBuilder: (context, index) => const SizedBox(width: 12),
+                              itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Container(height: 6, color: OtherColor.lineDivider),
-                    //Section Cast
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16, left: 16),
-                          child: Text("Top Billed Cast", style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary)),
-                        ),
-                        const SizedBox(height: 16),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 280),
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => _renderCastCard(credit.cast[index]),
-                            separatorBuilder: (context, index) => const SizedBox(width: 12),
-                            itemCount: (credit.cast.length >= 10) ? 10 : credit.cast.length,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -307,7 +335,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 : const SizedBox(),
             centerTitle: true,
             background: CarouselSlider.builder(
-              itemCount: backdrops!.length,
+              itemCount: backdrops.length,
               options: CarouselOptions(
                 height: 300,
                 viewportFraction: 1,

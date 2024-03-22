@@ -3,6 +3,7 @@ import 'package:movie_app/app/router/routes.dart';
 import 'package:movie_app/app/ui/screens/main_tab_screen.dart';
 import 'package:movie_app/app/ui/screens/login_screen.dart';
 import 'package:movie_app/app/ui/screens/movie_detail_screen.dart';
+import 'package:movie_app/app/ui/screens/rating_favorite_screen.dart';
 import 'package:movie_app/app/ui/screens/splash_screen.dart';
 import 'package:movie_app/app/ui/screens/welcome_screen.dart';
 
@@ -37,6 +38,11 @@ final goRouter = GoRouter(
           builder: (context, state) => MovieDetailScreen(
             id: int.parse(state.pathParameters['id'] ?? '0'),
           ),
+        ),
+        GoRoute(
+          path: RoutePath.ratingFavorite,
+          name: RouteName.ratingFavorite,
+          builder: (context, state) => RatingFavoriteScreen(type: state.pathParameters['type']!),
         ),
       ],
     )

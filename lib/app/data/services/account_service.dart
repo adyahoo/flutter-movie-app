@@ -30,6 +30,16 @@ class AccountService {
     );
   }
 
+  Future<ListApiResponse<RatedMovieModel>> getFavoriteMovie() async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("account/account_id/favorite/movies");
+
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => RatedMovieModel.fromJson(e)).toList());
+      },
+    );
+  }
+
   Future<ApiResponse> addFavorite(AddFavoriteModel body) async {
     return clientExecutor(
       execute: () async {

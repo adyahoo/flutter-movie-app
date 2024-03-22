@@ -8,3 +8,12 @@ abstract class AccountEvent extends Equatable {
 }
 
 class GetProfileEvent extends AccountEvent {}
+
+class FavoriteMovieAdded extends AccountEvent {
+  const FavoriteMovieAdded({required this.body});
+
+  final AddFavoriteModel body;
+
+  @override
+  List<Object> get props => [body];
+}

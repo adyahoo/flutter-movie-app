@@ -30,9 +30,7 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
 
           final accountState = await movieRepository.getAccountStates(event.id);
 
-          emit(
-            state.copyWith(status: ApiResultStatus.success, detail: detail, backdrops: backdrops, credit: credit, accountState: accountState),
-          );
+          emit(state.copyWith(status: ApiResultStatus.success, detail: detail, backdrops: backdrops, credit: credit, accountState: accountState));
         } on ApiException catch (e) {
           emit(state.copyWith(status: ApiResultStatus.error, error: e));
         }
@@ -54,5 +52,7 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
         }
       },
     );
+
+    on<FavoriteToggled>((event, emit) => emit(state.copyWith(accountState: state.accountState?.copyWith(favorite: !state.accountState!.favorite))));
   }
 }

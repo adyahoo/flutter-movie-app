@@ -49,8 +49,16 @@ class _AccountScreenState extends State<AccountScreen> {
   void _onPressMenuHandler(PickerModel item) {
     switch (item.id) {
       case 1:
+        goRouter.pushNamed(
+          RouteName.ratingFavorite,
+          pathParameters: {"type": item.type.name},
+        );
         break;
       case 2:
+        goRouter.pushNamed(
+          RouteName.ratingFavorite,
+          pathParameters: {"type": item.type.name},
+        );
         break;
       case 3:
         break;

@@ -294,6 +294,16 @@ class AccountStatesModel extends Equatable {
     );
   }
 
+  AccountStatesModel copyWith({
+    bool? favorite,
+    dynamic? rated,
+  }) {
+    return AccountStatesModel(
+      favorite: favorite ?? this.favorite,
+      rated: rated ?? this.rated,
+    );
+  }
+
   @override
   List<Object> get props => [favorite, rated];
 }

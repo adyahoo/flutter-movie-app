@@ -18,8 +18,8 @@ class FetchData extends MovieDetailEvent {
   List<Object> get props => [id];
 }
 
-class GetMovieImagesEvent extends MovieDetailEvent {
-  const GetMovieImagesEvent({required this.id});
+class MovieImagesFetched extends MovieDetailEvent {
+  const MovieImagesFetched({required this.id});
 
   final int id;
 
@@ -36,3 +36,5 @@ class MovieRatingAdded extends MovieDetailEvent {
   @override
   List<Object> get props => [id, rateValue];
 }
+
+class FavoriteToggled extends MovieDetailEvent {}

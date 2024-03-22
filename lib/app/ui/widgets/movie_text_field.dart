@@ -61,7 +61,7 @@ class _MovieTextFieldState extends State<MovieTextField> {
 
   Widget _renderSearchField(Color bgColor, Widget? suffixIcon) {
     final borderDecoration = OutlineInputBorder(
-      borderSide: BorderSide(width: 0, color: bgColor),
+      borderSide: BorderSide(width: 1, color: bgColor),
       borderRadius: BorderRadius.circular(24),
     );
 

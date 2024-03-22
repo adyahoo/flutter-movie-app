@@ -29,6 +29,16 @@ class AccountRepository {
     }
   }
 
+  Future<ListApiResponse<RatedMovieModel>> getFavoriteMovie() async {
+    try {
+      final res = await accountService.getFavoriteMovie();
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<ApiResponse> addFavorite(AddFavoriteModel body) async {
     try {
       final res = await accountService.addFavorite(body);

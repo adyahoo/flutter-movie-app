@@ -6,6 +6,7 @@ import 'package:movie_app/app/blocs/account/account_bloc.dart';
 import 'package:movie_app/app/blocs/auth/auth_bloc.dart';
 import 'package:movie_app/app/blocs/api_result_state.dart';
 import 'package:movie_app/app/blocs/movie_detail/movie_detail_bloc.dart';
+import 'package:movie_app/app/blocs/rating_favorite/rating_favorite_bloc.dart';
 import 'package:movie_app/app/router/router.dart';
 import 'package:movie_app/app/router/routes.dart';
 import 'package:movie_app/di.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
             movieRepository: inject(),
           ),
         ),
+        BlocProvider<RatingFavoriteBloc>(create: (context) => RatingFavoriteBloc(accountRepository: inject())),
       ],
       child: LocalizationProvider(
         state: LocalizationProvider.of(context).state,
