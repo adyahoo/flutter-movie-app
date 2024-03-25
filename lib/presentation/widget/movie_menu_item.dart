@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import 'package:movie_app/config/app_color.dart';
+
+import '../../data/model/picker_model.dart';
+
+class MovieMenuItem extends StatelessWidget {
+  const MovieMenuItem({super.key, required this.data, this.onPress});
+
+  final PickerModel data;
+  final void Function(PickerModel item)? onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (onPress != null) {
+          onPress!(data);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: ShapeDecoration(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x19555555),
+                blurRadius: 4,
+                offset: Offset(0, 0),
+                spreadRadius: 0,
+              )
+            ]),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              data.prefixIcon,
+              size: 20,
+              color: Colors.black,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                data.label,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: PrimaryColor.main),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 16,
+              color: PrimaryColor.main,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

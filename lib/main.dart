@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:movie_app/app/blocs/account/account_bloc.dart';
-import 'package:movie_app/app/blocs/auth/auth_bloc.dart';
-import 'package:movie_app/app/blocs/api_result_state.dart';
-import 'package:movie_app/app/blocs/movie_detail/movie_detail_bloc.dart';
-import 'package:movie_app/app/blocs/rating_favorite/rating_favorite_bloc.dart';
-import 'package:movie_app/app/router/router.dart';
-import 'package:movie_app/app/router/routes.dart';
-import 'package:movie_app/di.dart';
-import 'package:movie_app/utils/theme/custom_theme.dart';
+import 'package:movie_app/presentation/bloc/account/account_bloc.dart';
+import 'package:movie_app/presentation/bloc/api_result_state.dart';
+import 'package:movie_app/config/di.dart';
+import 'package:movie_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:movie_app/presentation/bloc/home/home_bloc.dart';
+import 'package:movie_app/presentation/bloc/movie_detail/movie_detail_bloc.dart';
+import 'package:movie_app/presentation/bloc/rating_favorite/rating_favorite_bloc.dart';
 
-import 'app/blocs/home/home_bloc.dart';
+import 'config/navigation/router.dart';
+import 'config/navigation/routes.dart';
+import 'config/theme/custom_theme.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldKey = GlobalKey<ScaffoldMessengerState>();
 

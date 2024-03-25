@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
-import '../../app/data/models/picker_model.dart';
+import '../../data/model/picker_model.dart';
+
 
 enum MenuType { RATING, FAVORITE, LIST, LOGOUT, DELETE }
 

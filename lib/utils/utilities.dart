@@ -2,13 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:movie_app/app/data/models/api_model.dart';
-import 'package:movie_app/app/router/router.dart';
-import 'package:movie_app/app/ui/widgets/movie_button.dart';
+import 'package:movie_app/presentation/widget/movie_button.dart';
 import 'package:movie_app/main.dart';
-import 'package:movie_app/utils/app_color.dart';
+import 'package:movie_app/config/app_color.dart';
 import 'package:movie_app/utils/constants.dart';
-import 'package:movie_app/utils/exception/api_exception.dart';
+
+import '../config/exception/api_exception.dart';
+import '../config/navigation/router.dart';
+import '../data/model/api_model.dart';
 
 void errorHandler(ApiException e) {
   ApiResponse? errorResponse;
