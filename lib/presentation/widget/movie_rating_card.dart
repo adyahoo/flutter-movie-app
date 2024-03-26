@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/data/model/account_model.dart';
 import 'package:movie_app/config/app_color.dart';
 import 'package:movie_app/utils/constants.dart';
+import 'package:movie_app/utils/dummies/MovieDummyData.dart';
 
 import 'movie_button.dart';
 
@@ -10,11 +11,13 @@ class MovieRatingCard extends StatelessWidget {
   const MovieRatingCard({
     super.key,
     required this.movie,
+    required this.type,
     required this.onMenuClicked,
     required this.onRateClicked,
   });
 
   final RatedMovieModel movie;
+  final MenuType type;
   final Function() onMenuClicked;
   final Function() onRateClicked;
 
@@ -79,7 +82,7 @@ class MovieRatingCard extends StatelessWidget {
                       border: Border.all(color: TextColor.placeholder, width: 1),
                     ),
                     child: Icon(
-                      Icons.more_horiz_outlined,
+                      (type == MenuType.RATING) ? Icons.more_horiz_outlined : Icons.list_rounded,
                       size: 20,
                       color: TextColor.primary,
                     ),
@@ -88,13 +91,13 @@ class MovieRatingCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: MovieButton.outline(
-                    text: "Rated ${movie.rating}",
-                    icon: Icons.check,
+                    text: (type == MenuType.RATING) ? "Rated ${movie.rating}" : "Remove From Favorites",
+                    icon: (type == MenuType.RATING) ? Icons.check : null,
                     isLoading: false,
                     onPress: onRateClicked,
                     size: MovieButtonSize.small,
                   ),
-                )
+                ),
               ],
             ),
           ],

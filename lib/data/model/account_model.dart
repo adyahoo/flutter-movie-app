@@ -27,7 +27,7 @@ class RatedMovieModel extends Equatable {
     required this.overview,
     required this.poster,
     required this.releaseDate,
-    required this.rating,
+    this.rating,
   });
 
   final int id;
@@ -35,7 +35,7 @@ class RatedMovieModel extends Equatable {
   final String overview;
   final String poster;
   final String releaseDate;
-  final double rating;
+  final double? rating;
 
   String get date {
     final format = DateTime.parse(releaseDate);
@@ -56,7 +56,7 @@ class RatedMovieModel extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, title, overview, poster, releaseDate, rating];
+  List<Object?> get props => [id, title, overview, poster, releaseDate, rating];
 }
 
 class AddFavoriteModel extends Equatable {

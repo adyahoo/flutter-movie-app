@@ -26,5 +26,17 @@ class RatingFavoriteBloc extends Bloc<RatingFavoriteEvent, RatingFavoriteState> 
         emit(state.copyWith(status: ApiResultStatus.error, error: e));
       }
     });
+
+    on<FavoritedMoviesFetched>((event, emit) async {
+      emit(state.copyWith(status: ApiResultStatus.loading));
+
+      try {
+        final res = await accountRepository.getFavoriteMovie();
+
+        emit(state.copyWith(status: ApiResultStatus.success, ratedMovies: res));
+      } on ApiException catch (e) {
+        emit(state.copyWith(status: ApiResultStatus.error, error: e));
+      }
+    });
   }
 }
