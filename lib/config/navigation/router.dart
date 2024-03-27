@@ -40,6 +40,13 @@ final goRouter = GoRouter(
           name: RouteName.ratingFavorite,
           builder: (context, state) => RatingFavoriteScreen(type: state.pathParameters['type']!),
         ),
+        GoRoute(
+          path: RoutePath.selectList,
+          name: RouteName.selectList,
+          builder: (context, state) => SelectListScreen(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
       ],
     )
   ],

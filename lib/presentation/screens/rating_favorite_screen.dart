@@ -29,7 +29,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
     super.initState();
   }
 
-  void _showOptionBS() {
+  void _showOptionBS(RatedMovieModel movie) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -43,16 +43,21 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Option", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: TextColor.primary)),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: OtherColor.dot,
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: 16,
-                      color: TextColor.primary,
+                  InkWell(
+                    onTap: () {
+                      goRouter.pop();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: OtherColor.lineDivider,
+                      ),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 16,
+                        color: TextColor.primary,
+                      ),
                     ),
                   )
                 ],
@@ -60,19 +65,33 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
               const SizedBox(height: 8),
               Column(
                 children: MovieDummyData.getRatingMenu().map((e) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: OtherColor.dot))),
-                    child: Row(
-                      children: [
-                        Icon(
-                          e.prefixIcon,
-                          size: 20,
-                          color: TextColor.primary,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(e.label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: TextColor.primary)),
-                      ],
+                  return InkWell(
+                    onTap: () {
+                      switch (e.id) {
+                        case 1:
+                          goRouter.pop();
+                          _navigateSelectList(movie.id);
+                          break;
+                        case 2:
+                          goRouter.pop();
+                          _movieDetailBloc.add(MovieRatingDeleted(id: movie.id));
+                          break;
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: OtherColor.lineDivider))),
+                      child: Row(
+                        children: [
+                          Icon(
+                            e.prefixIcon,
+                            size: 20,
+                            color: TextColor.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(e.label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: TextColor.primary)),
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
@@ -82,6 +101,14 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
         );
       },
     );
+  }
+
+  void _menuClickHandler(RatedMovieModel movie) {
+    if (widget.type == MenuType.RATING.name) {
+      _showOptionBS(movie);
+    } else {
+      _navigateSelectList(movie.id);
+    }
   }
 
   void _actionClickHandler(RatedMovieModel movie) {
@@ -99,6 +126,15 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
       final body = AddFavoriteModel(movieId: movie.id, isFavorite: false);
       _accountBloc.add(FavoriteMovieAdded(body: body));
     }
+  }
+
+  void _navigateSelectList(int id) {
+    goRouter.pushNamed(
+      RouteName.selectList,
+      pathParameters: {
+        "id": id.toString(),
+      },
+    );
   }
 
   Widget _renderLoading() {
@@ -136,11 +172,21 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
       listeners: [
         BlocListener<AccountBloc, AccountState>(
           listener: (context, state) {
-            if(state.favoriteStatus == ApiResultStatus.loading){
+            if (state.favoriteStatus == ApiResultStatus.loading) {
               showLoading(context);
-            }else {
+            } else {
               hideLoading(context);
               _ratingFavoriteBloc.add(FavoritedMoviesFetched());
+            }
+          },
+        ),
+        BlocListener<MovieDetailBloc, MovieDetailState>(
+          listener: (context, state) {
+            if (state.rateStatus == ApiResultStatus.loading) {
+              showLoading(context);
+            } else {
+              hideLoading(context);
+              _ratingFavoriteBloc.add(RatedMoviesFetched());
             }
           },
         ),
@@ -174,7 +220,9 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
                             return MovieRatingCard(
                               movie: movie,
                               type: type,
-                              onMenuClicked: _showOptionBS,
+                              onMenuClicked: () {
+                                _menuClickHandler(movie);
+                              },
                               onRateClicked: () {
                                 _actionClickHandler(movie);
                               },

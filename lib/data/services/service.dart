@@ -13,3 +13,4 @@ part 'storage_service.dart';
 part 'home_service.dart';
 part 'auth_service.dart';
 part 'account_service.dart';
+part 'list_service.dart';

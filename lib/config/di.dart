@@ -16,6 +16,7 @@ Future setupInjection() async {
   inject.registerFactory<AccountService>(() => AccountService(inject()));
   inject.registerFactory<HomeService>(() => HomeService(inject()));
   inject.registerFactory<MovieService>(() => MovieService(inject()));
+  inject.registerFactory<ListService>(() => ListService(inject()));
   inject.registerFactory<AuthRepository>(
     () => AuthRepository(
       storageService: inject(),
@@ -25,4 +26,5 @@ Future setupInjection() async {
   inject.registerFactory<AccountRepository>(() => AccountRepository(inject()));
   inject.registerFactory<HomeRepository>(() => HomeRepository(inject()));
   inject.registerFactory<MovieRepository>(() => MovieRepository(inject()));
+  inject.registerFactory<ListRepository>(() => ListRepository(inject()));
 }

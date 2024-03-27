@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:movie_app/presentation/widget/movie_button.dart';
 
 import '../../../config/app_color.dart';
@@ -7,18 +8,20 @@ class MovieAlertDialog extends StatelessWidget {
   const MovieAlertDialog({
     super.key,
     required this.title,
-    required this.description,
     required this.positiveTitle,
+    this.description,
+    this.gif,
     this.positiveAction,
-    required this.negativeTitle,
+    this.negativeTitle,
     this.negativeAction,
   });
 
   final String title;
-  final String description;
   final String positiveTitle;
+  final String? description;
+  final String? gif;
   final void Function()? positiveAction;
-  final String negativeTitle;
+  final String? negativeTitle;
   final void Function()? negativeAction;
 
   @override
@@ -29,17 +32,21 @@ class MovieAlertDialog extends StatelessWidget {
           child: MovieButton.outline(
             text: positiveTitle,
             isLoading: false,
-            onPress: negativeAction,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: MovieButton.filled(
-            text: negativeTitle,
-            isLoading: false,
             onPress: positiveAction,
           ),
         ),
+        (negativeTitle != null)
+            ? Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: MovieButton.filled(
+                    text: negativeTitle!,
+                    isLoading: false,
+                    onPress: negativeAction,
+                  ),
+                ),
+              )
+            : const SizedBox()
       ],
     );
 
@@ -51,15 +58,27 @@ class MovieAlertDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          (gif != null)
+              ? Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: Lottie.asset(
+                    "assets/gifs/$gif",
+                    width: 120,
+                    height: 120,
+                  ),
+                )
+              : const SizedBox(),
           Text(
             title,
             style: Theme.of(context).textTheme.displayMedium,
           ),
           const SizedBox(height: 8),
-          Text(
-            description,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-          ),
+          (description != null)
+              ? Text(
+                  description!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                )
+              : const SizedBox(),
           const SizedBox(height: 20),
           renderAction,
         ],

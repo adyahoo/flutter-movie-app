@@ -37,4 +37,13 @@ class MovieRatingAdded extends MovieDetailEvent {
   List<Object> get props => [id, rateValue];
 }
 
+class MovieRatingDeleted extends MovieDetailEvent {
+  const MovieRatingDeleted({required this.id});
+
+  final int id;
+
+  @override
+  List<Object> get props => [id];
+}
+
 class FavoriteToggled extends MovieDetailEvent {}

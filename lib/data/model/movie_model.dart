@@ -307,3 +307,26 @@ class AccountStatesModel extends Equatable {
   @override
   List<Object> get props => [favorite, rated];
 }
+
+class MovieListModel extends Equatable {
+  const MovieListModel({required this.id, required this.name, required this.description, required this.itemCount, this.poster});
+
+  final int id;
+  final String name;
+  final String description;
+  final int itemCount;
+  final String? poster;
+
+  factory MovieListModel.fromJson(Map<String, dynamic> map) {
+    return MovieListModel(
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      itemCount: map['item_count'],
+      poster: map['poster_path'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, description, itemCount, poster];
+}

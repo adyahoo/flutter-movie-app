@@ -51,6 +51,20 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
       },
     );
 
+    on<MovieRatingDeleted>(
+      (event, emit) async {
+        emit(state.copyWith(rateStatus: ApiResultStatus.loading));
+
+        try {
+          await movieRepository.deleteRating(event.id);
+
+          emit(state.copyWith(rateStatus: ApiResultStatus.success));
+        } on ApiException catch (e) {
+          emit(state.copyWith(rateStatus: ApiResultStatus.error, error: e));
+        }
+      },
+    );
+
     on<FavoriteToggled>((event, emit) => emit(state.copyWith(accountState: state.accountState?.copyWith(favorite: !state.accountState!.favorite))));
   }
 }

@@ -5,6 +5,7 @@ class RoutePath {
   static const mainTab = "/main_tab";
   static const detail = "detail/:id";
   static const ratingFavorite = "rating_favorite/:type";
+  static const selectList = "select_list/:id";
 }
 
 class RouteName {
@@ -14,4 +15,5 @@ class RouteName {
   static const mainTab = "main_tab";
   static const detail = "detail";
   static const ratingFavorite = "rating_favorite";
+  static const selectList = "select_list";
 }

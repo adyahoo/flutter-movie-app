@@ -51,6 +51,14 @@ class MovieService {
     });
   }
 
+  Future<ApiResponse> deleteRating(int id) async {
+    return clientExecutor(execute: () async {
+      final res = await client.delete("movie/$id/rating");
+
+      return ApiResponse.fromJson(res.data);
+    });
+  }
+
   Future<AccountStatesModel> getAccountStates(int id) async {
     return clientExecutor(execute: () async {
       final res = await client.get("movie/$id/account_states");

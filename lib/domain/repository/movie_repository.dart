@@ -55,6 +55,16 @@ class MovieRepository {
     }
   }
 
+  Future<ApiResponse> deleteRating(int id) async {
+    try {
+      final res = await _movieService.deleteRating(id);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<AccountStatesModel> getAccountStates(int id) async {
     try {
       final res = await _movieService.getAccountStates(id);

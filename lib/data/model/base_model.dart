@@ -13,7 +13,7 @@ class ListApiResponse<T> extends Equatable {
   final int totalPages;
   final int totalResults;
 
-  factory ListApiResponse.fromJson(Map<String, dynamic> json, Function(Iterable map) create) =>
+  factory ListApiResponse.fromJson(Map<String, dynamic> json, Function(Iterable json) create) =>
       ListApiResponse(
         page: json['page'],
         results: create(json['results'] as Iterable),
