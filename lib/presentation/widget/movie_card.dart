@@ -1,23 +1,105 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:movie_app/config/app_color.dart';
 import 'package:movie_app/utils/constants.dart';
 
 import '../../data/model/movie_model.dart';
+import '../../utils/utilities.dart';
+
+enum MovieCardType { basic, staggered }
 
 class MovieCard extends StatelessWidget {
-  const MovieCard({
+  MovieCard({
     super.key,
     required this.movie,
     required this.onTap,
   });
 
+  MovieCard.staggered({
+    super.key,
+    required this.movie,
+    required this.onTap,
+  }) : type = MovieCardType.staggered;
+
   final MovieModel movie;
   final void Function(int id) onTap;
+  MovieCardType type = MovieCardType.basic;
 
   @override
   Widget build(BuildContext context) {
+    Widget content = SizedBox(
+      width: 120,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CachedNetworkImage(
+            imageUrl: "${Constants.IMAGE_BASE_URL}${movie.poster}",
+            width: double.infinity,
+            height: 180,
+            fit: BoxFit.cover,
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    movie.title,
+                    style: Theme.of(context).textTheme.labelMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    translateReleaseDate(movie.releaseDate),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                    maxLines: 1,
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+
+    if (type == MovieCardType.staggered) {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CachedNetworkImage(
+            imageUrl: "${Constants.IMAGE_BASE_URL}${movie.poster}",
+            width: double.infinity,
+            height: 235,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  movie.title,
+                  style: Theme.of(context).textTheme.labelMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  translateReleaseDate(movie.releaseDate),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
     return Card(
       surfaceTintColor: Colors.white,
       shape: RoundedRectangleBorder(
@@ -29,43 +111,7 @@ class MovieCard extends StatelessWidget {
         onTap: () {
           onTap(movie.id);
         },
-        child: SizedBox(
-          width: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CachedNetworkImage(
-                imageUrl: "${Constants.IMAGE_BASE_URL}${movie.poster}",
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        movie.title,
-                        style: Theme.of(context).textTheme.labelMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        _translateReleaseDate(movie.releaseDate),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                        maxLines: 1,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+        child: content,
       ),
     );
   }
@@ -125,12 +171,4 @@ class UpcomingMovieCard extends StatelessWidget {
       ),
     );
   }
-}
-
-String _translateReleaseDate(String releaseDate) {
-  final inputFormat = DateFormat("yyyy-MM-dd");
-  final inputDate = inputFormat.parse(releaseDate);
-
-  final outputFormat = DateFormat("MMM dd, yyyy");
-  return outputFormat.format(inputDate);
 }

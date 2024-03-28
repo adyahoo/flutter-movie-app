@@ -61,7 +61,15 @@ class _SelectListScreenState extends State<SelectListScreen> {
           title: "Successfully added movie to list",
           positiveTitle: "Back to Detail",
           gif: "success.json",
-          positiveAction: () {},
+          positiveAction: () {
+            goRouter.pop();
+            goRouter.goNamed(
+              RouteName.detail,
+              pathParameters: {
+                "id": widget.id.toString(),
+              },
+            );
+          },
         );
       },
     );
@@ -80,7 +88,7 @@ class _SelectListScreenState extends State<SelectListScreen> {
         ),
       ],
       child: Scaffold(
-        appBar: const MovieAppBar(
+        appBar: MovieAppBar(
           text: "Select List",
         ),
         body: Padding(

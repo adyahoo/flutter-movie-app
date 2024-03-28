@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocBuilder<AuthBloc, ApiResultState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: const MovieAppBar(),
+          appBar:  MovieAppBar(),
           body: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(16),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:movie_app/data/model/movie_model.dart';
 
 import '../../data/model/picker_model.dart';
-
 
 enum MenuType { RATING, FAVORITE, LIST, LOGOUT, DELETE }
 
@@ -23,5 +23,43 @@ class MovieDummyData {
   static List<PickerModel> getRatingMenu() => [
         PickerModel(id: 1, label: translate("add_to_list"), type: MenuType.LIST, prefixIcon: Icons.list),
         PickerModel(id: 2, label: translate("remove_rating"), type: MenuType.DELETE, prefixIcon: Icons.delete_rounded),
+      ];
+
+  static List<MovieModel> getMovies() => [
+        MovieModel(
+          id: 1,
+          title: "title",
+          poster: "https://static.wikia.nocookie.net/kda-league-of-legends/images/b/be/Chaeyoung.jpg/revision/latest?cb=20210330180327",
+          releaseDate: "1212-12-12",
+          overview: "asdjfhasdk",
+        ),
+        MovieModel(
+          id: 1,
+          title: "title asjdfgasdjfjkasdgfjkasdgfjkasdgflasdhlfjkahsdklf",
+          poster: "https://static.wikia.nocookie.net/kda-league-of-legends/images/b/be/Chaeyoung.jpg/revision/latest?cb=20210330180327",
+          releaseDate: "1212-12-12",
+          overview: "asdjfhasdk",
+        ),
+        MovieModel(
+          id: 1,
+          title: "title",
+          poster: "https://static.wikia.nocookie.net/kda-league-of-legends/images/b/be/Chaeyoung.jpg/revision/latest?cb=20210330180327",
+          releaseDate: "1212-12-12",
+          overview: "asdjfhasdk",
+        ),
+        MovieModel(
+          id: 1,
+          title: "title asjdfgasdjfjkasdgfjkasdgfjkasdgflasdhlfjkahsdklf",
+          poster: "https://static.wikia.nocookie.net/kda-league-of-legends/images/b/be/Chaeyoung.jpg/revision/latest?cb=20210330180327",
+          releaseDate: "1212-12-12",
+          overview: "asdjfhasdk",
+        ),
+        MovieModel(
+          id: 1,
+          title: "title asjdfgasdjfjkasdgfjkasdgfjkasdgflasdhlfjkahsdklf",
+          poster: "https://static.wikia.nocookie.net/kda-league-of-legends/images/b/be/Chaeyoung.jpg/revision/latest?cb=20210330180327",
+          releaseDate: "1212-12-12",
+          overview: "asdjfhasdk",
+        ),
       ];
 }

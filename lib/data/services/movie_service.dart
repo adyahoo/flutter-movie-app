@@ -5,6 +5,16 @@ class MovieService {
 
   final Dio client;
 
+  Future<ListApiResponse<MovieModel>> getAllMovies() async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("discover/movie");
+
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MovieModel.fromJson(e)).toList());
+      },
+    );
+  }
+
   Future<MovieTrailerModel> getMovieTrailer(int id) async {
     return clientExecutor(execute: () async {
       final res = await client.get("movie/$id/videos");
@@ -31,20 +41,16 @@ class MovieService {
   }
 
   Future<MovieCreditModel> getMovieCredit(int id) async {
-    return clientExecutor(
-      execute: () async {
-        final res = await client.get("movie/$id/credits");
+    return clientExecutor(execute: () async {
+      final res = await client.get("movie/$id/credits");
 
-        return MovieCreditModel.fromJson(res.data);
-      }
-    );
+      return MovieCreditModel.fromJson(res.data);
+    });
   }
 
   Future<ApiResponse> addRating(int id, double rating) async {
     return clientExecutor(execute: () async {
-      final body = {
-        "value": rating
-      };
+      final body = {"value": rating};
       final res = await client.post("movie/$id/rating", data: body);
 
       return ApiResponse.fromJson(res.data);
@@ -60,10 +66,12 @@ class MovieService {
   }
 
   Future<AccountStatesModel> getAccountStates(int id) async {
-    return clientExecutor(execute: () async {
-      final res = await client.get("movie/$id/account_states");
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("movie/$id/account_states");
 
-      return AccountStatesModel.fromJson(res.data);
-    },);
+        return AccountStatesModel.fromJson(res.data);
+      },
+    );
   }
 }

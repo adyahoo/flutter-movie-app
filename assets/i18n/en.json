@@ -28,5 +28,6 @@
   "not_login_yet": "Not login yet? Login to use all feature",
   "login_now": "Login Now",
   "add_to_list": "Add to list",
-  "remove_rating": "Remove Rating"
+  "remove_rating": "Remove Rating",
+  "empty_movies": "There are no movies that matched your keywords or filter."
 }

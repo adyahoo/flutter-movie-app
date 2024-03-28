@@ -5,6 +5,16 @@ class MovieRepository {
 
   final MovieService _movieService;
 
+  Future<ListApiResponse<MovieModel>> getAllMovies() async {
+    try {
+      final res = await _movieService.getAllMovies();
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<MovieTrailerModel> getMovieTrailer(int id) async {
     try {
       final res = await _movieService.getMovieTrailer(id);

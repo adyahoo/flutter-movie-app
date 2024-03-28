@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_app/presentation/widget/movie_button.dart';
 import 'package:movie_app/main.dart';
 import 'package:movie_app/config/app_color.dart';
@@ -158,4 +159,12 @@ void showRateBS(
       );
     },
   );
+}
+
+String translateReleaseDate(String releaseDate) {
+  final inputFormat = DateFormat("yyyy-MM-dd");
+  final inputDate = inputFormat.parse(releaseDate);
+
+  final outputFormat = DateFormat("MMM dd, yyyy");
+  return outputFormat.format(inputDate);
 }

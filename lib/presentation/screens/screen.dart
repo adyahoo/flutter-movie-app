@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:movie_app/presentation/bloc/list/list_bloc.dart';
 
@@ -22,6 +23,7 @@ import '../bloc/api_result_state.dart';
 import '../bloc/auth/auth_bloc.dart';
 import '../bloc/home/home_bloc.dart';
 import '../bloc/movie_detail/movie_detail_bloc.dart';
+import '../bloc/movies/movies_bloc.dart';
 import '../bloc/rating_favorite/rating_favorite_bloc.dart';
 import '../widget/movie_alert_dialog.dart';
 import '../widget/movie_appbar.dart';

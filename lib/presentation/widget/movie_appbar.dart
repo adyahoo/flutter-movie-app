@@ -8,22 +8,29 @@ import 'movie_text_field.dart';
 enum AppBarType { screen, home, search }
 
 class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MovieAppBar({super.key, this.text})
-      : type = AppBarType.screen,
-        onTapInput = null,
-        height = 56;
+  MovieAppBar({
+    super.key,
+    this.text,
+  }) : type = AppBarType.screen;
 
-  const MovieAppBar.home({
+  MovieAppBar.home({
     super.key,
     required this.onTapInput,
   })  : type = AppBarType.home,
-        height = 120,
-        text = null;
+        height = 120;
 
-  final String? text;
+  MovieAppBar.search({
+    super.key,
+    required this.onSaved,
+  })  : type = AppBarType.search,
+        height = 100;
+
   final AppBarType type;
-  final double height;
-  final void Function()? onTapInput;
+
+  double height = 56;
+  String? text;
+  void Function()? onTapInput;
+  void Function(String?)? onSaved;
 
   Widget _renderScreenAppBarContent(BuildContext context, String? text) {
     Widget content = Image.asset(
@@ -59,6 +66,15 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  Widget _renderSearchAppBarContent() {
+    return MovieTextField.search(
+      placeholder: translate("search_movie"),
+      onSaved: onSaved!,
+      onTap: onTapInput,
+      isEditable: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (type) {
@@ -89,18 +105,9 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
         );
       case AppBarType.search:
         return AppBar(
-          title: _renderHomeAppBarContent(),
+          toolbarHeight: height - 30,
+          title: _renderSearchAppBarContent(),
           centerTitle: true,
-          leading: InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: const Icon(
-              Icons.chevron_left,
-              size: 28,
-              color: Colors.white,
-            ),
-          ),
           backgroundColor: PrimaryColor.main,
         );
     }
