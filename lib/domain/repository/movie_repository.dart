@@ -5,9 +5,19 @@ class MovieRepository {
 
   final MovieService _movieService;
 
-  Future<ListApiResponse<MovieModel>> getAllMovies() async {
+  Future<ListApiResponse<MovieModel>> getAllMovies({Map<String, dynamic>? queries}) async {
     try {
-      final res = await _movieService.getAllMovies();
+      final res = await _movieService.getAllMovies(queries);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<ListApiResponse<MovieModel>> searchMovies(Map<String, dynamic> queries) async {
+    try {
+      final res = await _movieService.searchMovies(queries);
 
       return res;
     } catch (e) {

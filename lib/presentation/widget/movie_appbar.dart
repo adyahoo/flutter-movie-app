@@ -22,6 +22,7 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
   MovieAppBar.search({
     super.key,
     required this.onSaved,
+    required this.onClear,
   })  : type = AppBarType.search,
         height = 100;
 
@@ -30,6 +31,7 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
   double height = 56;
   String? text;
   void Function()? onTapInput;
+  void Function()? onClear;
   void Function(String?)? onSaved;
 
   Widget _renderScreenAppBarContent(BuildContext context, String? text) {
@@ -71,6 +73,7 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
       placeholder: translate("search_movie"),
       onSaved: onSaved!,
       onTap: onTapInput,
+      onClear: onClear,
       isEditable: true,
     );
   }

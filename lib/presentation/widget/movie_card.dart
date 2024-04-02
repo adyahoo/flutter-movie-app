@@ -53,7 +53,7 @@ class MovieCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    translateReleaseDate(movie.releaseDate),
+                    (movie.releaseDate != "-") ? translateReleaseDate(movie.releaseDate) : movie.releaseDate,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
                     maxLines: 1,
                   )
@@ -89,7 +89,7 @@ class MovieCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  translateReleaseDate(movie.releaseDate),
+                  (movie.releaseDate != "-") ? translateReleaseDate(movie.releaseDate) : movie.releaseDate,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
                   maxLines: 1,
                 ),

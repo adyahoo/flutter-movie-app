@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 class MovieModel extends Equatable {
-  const MovieModel({required this.id, required this.title, required this.poster, required this.releaseDate, required this.overview});
+  const MovieModel({required this.id, required this.title, this.poster, required this.releaseDate, required this.overview});
 
   final int id;
   final String title;
-  final String poster;
+  final String? poster;
   final String releaseDate;
   final String overview;
 
@@ -14,7 +14,7 @@ class MovieModel extends Equatable {
         id: json['id'],
         title: json['original_title'],
         poster: json['poster_path'],
-        releaseDate: json['release_date'],
+        releaseDate: (json['release_date'] != "") ? json['release_date'] : "-",
         overview: json['overview'],
       );
 

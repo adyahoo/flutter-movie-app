@@ -9,17 +9,30 @@ class MoviesScreen extends StatefulWidget {
 
 class _MoviesScreenState extends State<MoviesScreen> {
   late MoviesBloc _moviesBloc;
+  late ScrollController _scrollController;
+
+  String searchQuery = "";
 
   @override
   void initState() {
     _moviesBloc = context.read<MoviesBloc>();
 
-    _moviesBloc.add(AllMoviesFetched());
+    _moviesBloc.add(const AllMoviesFetched());
+
+    _scrollController = ScrollController(initialScrollOffset: 5.0)..addListener(_scrollListener);
 
     super.initState();
   }
 
-  void _onSaved(String? value) {}
+  void _onSaved(String? value) {
+    searchQuery = value ?? "";
+    _moviesBloc.add(MoviesSearched(query: searchQuery));
+  }
+
+  void _onClear() {
+    searchQuery = "";
+    _moviesBloc.add(const AllMoviesFetched());
+  }
 
   Widget _renderFab() {
     return Container(
@@ -98,12 +111,21 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
+  void _scrollListener() {
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
+      if (_moviesBloc.state.currentPage != 0 && _moviesBloc.state.currentPage < _moviesBloc.state.totalPage) {
+        _moviesBloc.add(MoreMoviesFetched(page: _moviesBloc.state.currentPage + 1, query: searchQuery));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MovieAppBar.search(onSaved: _onSaved),
+      appBar: MovieAppBar.search(onSaved: _onSaved, onClear: _onClear),
       body: Center(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: BlocBuilder<MoviesBloc, MoviesState>(

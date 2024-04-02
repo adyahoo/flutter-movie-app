@@ -11,13 +11,15 @@ class MovieTextField extends StatefulWidget {
     required this.onSaved,
     this.type = MovieTextFieldType.text,
     this.isEditable = true,
-  }) : onTap = null;
+  })  : onTap = null,
+        onClear = null;
 
   const MovieTextField.search({
     super.key,
     required this.placeholder,
     required this.onSaved,
     this.onTap,
+    this.onClear,
     this.isEditable = true,
   })  : label = "",
         type = MovieTextFieldType.search;
@@ -27,6 +29,7 @@ class MovieTextField extends StatefulWidget {
   final MovieTextFieldType type;
   final void Function(String? value) onSaved;
   final void Function()? onTap;
+  final void Function()? onClear;
   final bool isEditable;
 
   @override
@@ -88,7 +91,7 @@ class _MovieTextFieldState extends State<MovieTextField> {
         suffixIcon: suffixIcon,
       ),
       style: Theme.of(context).textTheme.labelSmall,
-      onSaved: widget.onSaved,
+      onFieldSubmitted: widget.onSaved,
       onTap: widget.onTap,
       readOnly: !widget.isEditable,
     );
@@ -151,6 +154,10 @@ class _MovieTextFieldState extends State<MovieTextField> {
     } else if (isFocus) {
       suffixIcon = IconButton(
         onPressed: () {
+          if (widget.onClear != null) {
+            widget.onClear!();
+          }
+          FocusScope.of(context).unfocus();
           _inputController.clear();
         },
         icon: Icon(

@@ -5,10 +5,20 @@ class MovieService {
 
   final Dio client;
 
-  Future<ListApiResponse<MovieModel>> getAllMovies() async {
+  Future<ListApiResponse<MovieModel>> getAllMovies(Map<String, dynamic>? queries) async {
     return clientExecutor(
       execute: () async {
-        final res = await client.get("discover/movie");
+        final res = await client.get("discover/movie", queryParameters: queries);
+
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MovieModel.fromJson(e)).toList());
+      },
+    );
+  }
+
+  Future<ListApiResponse<MovieModel>> searchMovies(Map<String, dynamic> queries) async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("search/movie", queryParameters: queries);
 
         return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MovieModel.fromJson(e)).toList());
       },
