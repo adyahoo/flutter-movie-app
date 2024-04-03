@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:movie_app/domain/repository/genre_repository.dart';
+import 'package:movie_app/domain/repository/genre_repository.dart';
 
 import '../data/services/service.dart';
 import '../domain/repository/repository.dart';
@@ -17,6 +19,7 @@ Future setupInjection() async {
   inject.registerFactory<HomeService>(() => HomeService(inject()));
   inject.registerFactory<MovieService>(() => MovieService(inject()));
   inject.registerFactory<ListService>(() => ListService(inject()));
+  inject.registerFactory<GenreService>(() => GenreService(inject()));
   inject.registerFactory<AuthRepository>(
     () => AuthRepository(
       storageService: inject(),
@@ -27,4 +30,5 @@ Future setupInjection() async {
   inject.registerFactory<HomeRepository>(() => HomeRepository(inject()));
   inject.registerFactory<MovieRepository>(() => MovieRepository(inject()));
   inject.registerFactory<ListRepository>(() => ListRepository(inject()));
+  inject.registerFactory<GenreRepository>(() => GenreRepository(inject()));
 }

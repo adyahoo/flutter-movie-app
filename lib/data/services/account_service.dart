@@ -44,4 +44,14 @@ class AccountService {
       },
     );
   }
+
+  Future<ListApiResponse<MyListModel>> getMyList() async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.get("account/account_id/lists");
+
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MyListModel.fromJson(e)).toList());
+      },
+    );
+  }
 }

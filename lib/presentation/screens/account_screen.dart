@@ -40,6 +40,7 @@ class _AccountScreenState extends State<AccountScreen> {
         );
         break;
       case 3:
+        goRouter.pushNamed(RouteName.myList);
         break;
       case 4:
         _showAlertDialog();

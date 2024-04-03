@@ -38,7 +38,7 @@ class MovieDetailModel extends Equatable {
 
   final int id;
   final String title;
-  final List<MovieGenreModel> listGenres;
+  final List<GenreModel> listGenres;
   final String overview;
   final String releaseDate;
   final int runtime;
@@ -73,7 +73,7 @@ class MovieDetailModel extends Equatable {
     return MovieDetailModel(
         id: map['id'],
         title: map['original_title'],
-        listGenres: (map['genres'] as Iterable).map((e) => MovieGenreModel.fromJson(e)).toList(),
+        listGenres: (map['genres'] as Iterable).map((e) => GenreModel.fromJson(e)).toList(),
         overview: map['overview'],
         releaseDate: map['release_date'],
         runtime: map['runtime'],
@@ -107,8 +107,8 @@ class MovieProductionCountryModel extends Equatable {
   List<Object> get props => [country, name];
 }
 
-class MovieGenreModel extends Equatable {
-  const MovieGenreModel({
+class GenreModel extends Equatable {
+  const GenreModel({
     required this.id,
     required this.name,
   });
@@ -116,8 +116,8 @@ class MovieGenreModel extends Equatable {
   final int id;
   final String name;
 
-  factory MovieGenreModel.fromJson(Map<String, dynamic> map) {
-    return MovieGenreModel(
+  factory GenreModel.fromJson(Map<String, dynamic> map) {
+    return GenreModel(
       id: map['id'],
       name: map['name'],
     );

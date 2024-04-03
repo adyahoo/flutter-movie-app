@@ -14,3 +14,4 @@ part 'home_service.dart';
 part 'auth_service.dart';
 part 'account_service.dart';
 part 'list_service.dart';
+part 'genre_service.dart';

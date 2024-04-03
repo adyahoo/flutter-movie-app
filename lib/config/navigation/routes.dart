@@ -6,6 +6,8 @@ class RoutePath {
   static const detail = "detail/:id";
   static const ratingFavorite = "rating_favorite/:type";
   static const selectList = "select_list/:id";
+  static const genreList = "genre_list";
+  static const myList = "my_list";
 }
 
 class RouteName {
@@ -16,4 +18,6 @@ class RouteName {
   static const detail = "detail";
   static const ratingFavorite = "rating_favorite";
   static const selectList = "select_list";
+  static const genreList = "genre_list";
+  static const myList = "my_list";
 }

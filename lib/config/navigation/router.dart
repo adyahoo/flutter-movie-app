@@ -47,6 +47,16 @@ final goRouter = GoRouter(
             id: int.parse(state.pathParameters['id'] ?? '0'),
           ),
         ),
+        GoRoute(
+          path: RoutePath.genreList,
+          name: RouteName.genreList,
+          builder: (context, state) => const GenreListScreen(),
+        ),
+        GoRoute(
+          path: RoutePath.myList,
+          name: RouteName.myList,
+          builder: (context, state) => const MyListScreen(),
+        ),
       ],
     )
   ],

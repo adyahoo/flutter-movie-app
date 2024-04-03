@@ -35,27 +35,32 @@ class _MoviesScreenState extends State<MoviesScreen> {
   }
 
   Widget _renderFab() {
-    return Container(
-      decoration: BoxDecoration(
-        color: SecondaryColor.main,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.filter_list_rounded,
-              size: 20,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              "Filter",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
-            ),
-          ],
+    return InkWell(
+      onTap: () async {
+        List<int>? callback = await goRouter.pushNamed(RouteName.genreList);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: SecondaryColor.main,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.filter_list_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                "Filter",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );

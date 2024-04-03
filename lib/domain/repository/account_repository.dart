@@ -44,4 +44,14 @@ class AccountRepository {
       rethrow;
     }
   }
+
+  Future<ListApiResponse<MyListModel>> getMyList() async {
+    try {
+      final res = await accountService.getMyList();
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

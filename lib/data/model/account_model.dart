@@ -77,3 +77,29 @@ class AddFavoriteModel extends Equatable {
   @override
   List<Object> get props => [type, movieId, isFavorite];
 }
+
+class MyListModel extends Equatable {
+  final int id;
+  final String name;
+  final String description;
+  final String? poster;
+
+  const MyListModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    this.poster,
+  });
+
+  factory MyListModel.fromJson(Map<String, dynamic> map) {
+    return MyListModel(
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      poster: map['poster_path'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, description, poster];
+}
