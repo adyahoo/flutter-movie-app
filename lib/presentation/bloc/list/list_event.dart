@@ -18,3 +18,25 @@ class MovieAddedToList extends ListEvent {
   @override
   List<Object> get props => [listId, movieId];
 }
+
+class NewListCreated extends ListEvent {
+  const NewListCreated({
+    required this.name,
+    required this.description,
+  });
+
+  final String name;
+  final String description;
+
+  @override
+  List<Object> get props => [name, description];
+}
+
+class ListDeleted extends ListEvent {
+  const ListDeleted({required this.id});
+
+  final int id;
+
+  @override
+  List<Object> get props => [id];
+}

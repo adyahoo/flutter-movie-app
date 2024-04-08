@@ -50,10 +50,24 @@ class _MyListScreenState extends State<MyListScreen> {
 
   void _onMenuTap(int movieId) {
     showOptionBS(context, MovieDummyData.getListOptionMenu(), (menuId) {
-      if (menuId == 0) {
+      if (menuId == 1) {
         //pilih edit
       }
       //pilih delete
+      showDialog(
+        context: context,
+        builder: (context) {
+          return MovieAlertDialog(
+            title: "Are you sure to delete list?",
+            description: "‘Drama|Romance’ list will be deleted after tap on sure button.",
+            positiveTitle: "Sure",
+            positiveAction: () {
+              _handleDelete(movieId);
+            },
+            negativeTitle: "Cancel",
+          );
+        },
+      );
     });
   }
 
@@ -61,8 +75,20 @@ class _MyListScreenState extends State<MyListScreen> {
     _listBloc.add(MovieListFetched());
   }
 
-  void _navigateCreateList(){
+  void _handleDelete(int id) async {
+    goRouter.pop();
+    goRouter.pop();
+    showLoading(context);
 
+    _listBloc.add(ListDeleted(id: id));
+  }
+
+  void _navigateCreateList() async {
+    final callback = await goRouter.pushNamed(RouteName.createList);
+
+    if (callback != null && callback == true) {
+      _handleRefresh();
+    }
   }
 
   @override
@@ -75,7 +101,16 @@ class _MyListScreenState extends State<MyListScreen> {
         child: Column(
           children: [
             Expanded(
-              child: BlocBuilder<ListBloc, ListState>(
+              child: BlocConsumer<ListBloc, ListState>(
+                listener: (context, state) {
+                  if (state.deleteStatus == ApiResultStatus.success) {
+                    hideLoading(context);
+                    _handleRefresh();
+                  }
+                },
+                listenWhen: (previous, current) {
+                  return previous.deleteStatus != current.deleteStatus;
+                },
                 builder: (context, state) {
                   if (state.status == ApiResultStatus.init || state.status == ApiResultStatus.loading) {
                     return _renderLoading();
@@ -104,7 +139,7 @@ class _MyListScreenState extends State<MyListScreen> {
               child: MovieButton.filled(
                 text: "Create List",
                 isLoading: false,
-                onPress: () {},
+                onPress: _navigateCreateList,
               ),
             ),
           ],

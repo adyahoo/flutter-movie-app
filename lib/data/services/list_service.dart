@@ -26,4 +26,24 @@ class ListService {
       },
     );
   }
+
+  Future<ApiResponse> createList(CreateListModel data) async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.post("list", data: data.toJson());
+
+        return ApiResponse.fromJson(res.data);
+      },
+    );
+  }
+
+  Future<ApiResponse> deleteList(int id) async {
+    return clientExecutor(
+      execute: () async {
+        final res = await client.delete("list/$id");
+
+        return ApiResponse.fromJson(res.data);
+      },
+    );
+  }
 }

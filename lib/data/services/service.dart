@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:movie_app/data/model/my_list_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../config/client/client.dart';

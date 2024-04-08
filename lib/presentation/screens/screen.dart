@@ -51,3 +51,4 @@ part 'welcome_screen.dart';
 part 'select_list_screen.dart';
 part 'genre_list_screen.dart';
 part 'my_list_screen.dart';
+part 'create_list_screen.dart';

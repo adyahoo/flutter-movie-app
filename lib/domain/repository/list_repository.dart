@@ -24,4 +24,24 @@ class ListRepository {
       rethrow;
     }
   }
+
+  Future<ApiResponse> createList(CreateListModel data) async {
+    try {
+      final res = await _listService.createList(data);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<ApiResponse> deleteList(int id) async {
+    try {
+      final res = await _listService.deleteList(id);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

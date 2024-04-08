@@ -8,6 +8,7 @@ class RoutePath {
   static const selectList = "select_list/:id";
   static const genreList = "genre_list";
   static const myList = "my_list";
+  static const createList = "create_list";
 }
 
 class RouteName {
@@ -20,4 +21,5 @@ class RouteName {
   static const selectList = "select_list";
   static const genreList = "genre_list";
   static const myList = "my_list";
+  static const createList = "create_list";
 }

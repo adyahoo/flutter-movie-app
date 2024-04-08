@@ -11,6 +11,7 @@ class MovieTextField extends StatefulWidget {
     required this.onSaved,
     this.type = MovieTextFieldType.text,
     this.isEditable = true,
+    this.isRequired = false,
   })  : onTap = null,
         onClear = null;
 
@@ -22,6 +23,7 @@ class MovieTextField extends StatefulWidget {
     this.onClear,
     this.isEditable = true,
   })  : label = "",
+        isRequired = false,
         type = MovieTextFieldType.search;
 
   final String placeholder;
@@ -31,6 +33,7 @@ class MovieTextField extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onClear;
   final bool isEditable;
+  final bool isRequired;
 
   @override
   State<MovieTextField> createState() => _MovieTextFieldState();
@@ -176,7 +179,14 @@ class _MovieTextFieldState extends State<MovieTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.label)),
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(text: widget.label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.label)),
+              (widget.isRequired) ? TextSpan(text: "*", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : const TextSpan(),
+            ],
+          ),
+        ),
         const SizedBox(height: 4),
         (widget.type == MovieTextFieldType.search) ? _renderSearchField(bgColor, suffixIcon) : _renderTextField(bgColor, suffixIcon),
       ],

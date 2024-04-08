@@ -1,3 +1,4 @@
+import 'package:movie_app/data/model/my_list_model.dart';
 import 'package:movie_app/data/services/service.dart';
 
 import '../../data/model/account_model.dart';

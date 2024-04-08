@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:movie_app/config/exception/api_exception.dart';
+import 'package:movie_app/data/model/my_list_model.dart';
 import 'package:movie_app/presentation/bloc/api_result_state.dart';
 
 import '../../../data/model/movie_model.dart';
@@ -38,6 +39,36 @@ class ListBloc extends Bloc<ListEvent, ListState> {
           emit(state.copyWith(submitStatus: ApiResultStatus.success));
         } on ApiException catch (e) {
           emit(state.copyWith(submitStatus: ApiResultStatus.error, error: e));
+        }
+      },
+    );
+
+    on<NewListCreated>(
+      (event, emit) async {
+        emit(state.copyWith(submitStatus: ApiResultStatus.loading));
+
+        try {
+          final body = CreateListModel(name: event.name, description: event.description);
+
+          await listRepository.createList(body);
+
+          emit(state.copyWith(submitStatus: ApiResultStatus.success));
+        } on ApiException catch (e) {
+          emit(state.copyWith(submitStatus: ApiResultStatus.error, error: e));
+        }
+      },
+    );
+
+    on<ListDeleted>(
+      (event, emit) async {
+        emit(state.copyWith(deleteStatus: ApiResultStatus.loading));
+
+        try {
+          await listRepository.deleteList(event.id);
+
+          emit(state.copyWith(deleteStatus: ApiResultStatus.success));
+        } on ApiException catch (e) {
+          emit(state.copyWith(deleteStatus: ApiResultStatus.error, error: e));
         }
       },
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:movie_app/config/navigation/router.dart';
 import 'package:movie_app/presentation/widget/movie_button.dart';
 
 import '../../../config/app_color.dart';
@@ -28,25 +29,31 @@ class MovieAlertDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget renderAction = Row(
       children: [
+        (negativeTitle != null)
+            ? Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: MovieButton.outline(
+                    text: negativeTitle!,
+                    isLoading: false,
+                    onPress: () {
+                      goRouter.pop();
+
+                      if (negativeAction != null) {
+                        negativeAction!();
+                      }
+                    },
+                  ),
+                ),
+              )
+            : const SizedBox(),
         Expanded(
-          child: MovieButton.outline(
+          child: MovieButton.filled(
             text: positiveTitle,
             isLoading: false,
             onPress: positiveAction,
           ),
         ),
-        (negativeTitle != null)
-            ? Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 16),
-                  child: MovieButton.filled(
-                    text: negativeTitle!,
-                    isLoading: false,
-                    onPress: negativeAction,
-                  ),
-                ),
-              )
-            : const SizedBox()
       ],
     );
 
@@ -77,6 +84,7 @@ class MovieAlertDialog extends StatelessWidget {
               ? Text(
                   description!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                  textAlign: TextAlign.center,
                 )
               : const SizedBox(),
           const SizedBox(height: 20),

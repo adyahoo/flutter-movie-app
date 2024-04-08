@@ -57,6 +57,11 @@ final goRouter = GoRouter(
           name: RouteName.myList,
           builder: (context, state) => const MyListScreen(),
         ),
+        GoRoute(
+          path: RoutePath.createList,
+          name: RouteName.createList,
+          builder: (context, state) => const CreateListScreen(),
+        ),
       ],
     )
   ],
