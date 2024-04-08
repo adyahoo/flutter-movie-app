@@ -4,7 +4,7 @@ import 'package:movie_app/data/model/movie_model.dart';
 
 import '../../data/model/picker_model.dart';
 
-enum MenuType { RATING, FAVORITE, LIST, LOGOUT, DELETE }
+enum MenuType { RATING, FAVORITE, LIST, LOGOUT, DELETE, EDIT }
 
 class MovieDummyData {
   static List<PickerModel> getAccountMenu() => [
@@ -25,7 +25,12 @@ class MovieDummyData {
         PickerModel(id: 2, label: translate("remove_rating"), type: MenuType.DELETE, prefixIcon: Icons.delete_rounded),
       ];
 
-  static List<MovieModel> getMovies() => [
+  static List<PickerModel> getListOptionMenu() => const [
+        PickerModel(id: 1, label: "Edit List", type: MenuType.EDIT, prefixIcon: Icons.mode_edit_outline_outlined),
+        PickerModel(id: 2, label: "Delete List", type: MenuType.DELETE, prefixIcon: Icons.delete_rounded),
+      ];
+
+  static List<MovieModel> getMovies() => const [
         MovieModel(
           id: 1,
           title: "title",

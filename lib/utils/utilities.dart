@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_app/data/model/picker_model.dart';
 import 'package:movie_app/presentation/widget/movie_button.dart';
 import 'package:movie_app/main.dart';
 import 'package:movie_app/config/app_color.dart';
@@ -167,4 +168,69 @@ String translateReleaseDate(String releaseDate) {
 
   final outputFormat = DateFormat("MMM dd, yyyy");
   return outputFormat.format(inputDate);
+}
+
+void showOptionBS(BuildContext context, List<PickerModel> data, Function(int menuId) onTap) {
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12, right: 16, bottom: 32, left: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Option", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: TextColor.primary)),
+                InkWell(
+                  onTap: () {
+                    goRouter.pop();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: OtherColor.lineDivider,
+                    ),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: TextColor.primary,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 8),
+            Column(
+              children: data.map((e) {
+                return InkWell(
+                  onTap: () {
+                    onTap(e.id);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: OtherColor.lineDivider))),
+                    child: Row(
+                      children: [
+                        Icon(
+                          e.prefixIcon,
+                          size: 20,
+                          color: TextColor.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(e.label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: TextColor.primary)),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            )
+          ],
+        ),
+      );
+    },
+  );
 }

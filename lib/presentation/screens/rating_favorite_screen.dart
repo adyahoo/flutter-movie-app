@@ -30,77 +30,18 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
   }
 
   void _showOptionBS(RatedMovieModel movie) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 12, right: 16, bottom: 32, left: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Option", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: TextColor.primary)),
-                  InkWell(
-                    onTap: () {
-                      goRouter.pop();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: OtherColor.lineDivider,
-                      ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 16,
-                        color: TextColor.primary,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 8),
-              Column(
-                children: MovieDummyData.getRatingMenu().map((e) {
-                  return InkWell(
-                    onTap: () {
-                      switch (e.id) {
-                        case 1:
-                          goRouter.pop();
-                          _navigateSelectList(movie.id);
-                          break;
-                        case 2:
-                          goRouter.pop();
-                          _movieDetailBloc.add(MovieRatingDeleted(id: movie.id));
-                          break;
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: OtherColor.lineDivider))),
-                      child: Row(
-                        children: [
-                          Icon(
-                            e.prefixIcon,
-                            size: 20,
-                            color: TextColor.primary,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(e.label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: TextColor.primary)),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              )
-            ],
-          ),
-        );
-      },
-    );
+    showOptionBS(context, MovieDummyData.getRatingMenu(), (menuId) {
+      switch (menuId) {
+        case 1:
+          goRouter.pop();
+          _navigateSelectList(movie.id);
+          break;
+        case 2:
+          goRouter.pop();
+          _movieDetailBloc.add(MovieRatingDeleted(id: movie.id));
+          break;
+      }
+    });
   }
 
   void _menuClickHandler(RatedMovieModel movie) {

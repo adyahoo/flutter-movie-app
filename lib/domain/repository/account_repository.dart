@@ -45,7 +45,7 @@ class AccountRepository {
     }
   }
 
-  Future<ListApiResponse<MyListModel>> getMyList() async {
+  Future<ListApiResponse<MovieListModel>> getMyList() async {
     try {
       final res = await accountService.getMyList();
 
