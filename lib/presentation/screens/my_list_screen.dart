@@ -9,9 +9,11 @@ class MyListScreen extends StatefulWidget {
 
 class _MyListScreenState extends State<MyListScreen> {
   late ListBloc _listBloc;
+  late BuildContext _context;
 
   @override
   void initState() {
+    _context = context;
     _listBloc = context.read<ListBloc>();
 
     _listBloc.add(MovieListFetched());
@@ -52,22 +54,32 @@ class _MyListScreenState extends State<MyListScreen> {
     showOptionBS(context, MovieDummyData.getListOptionMenu(), (menuId) {
       if (menuId == 1) {
         //pilih edit
+        goRouter.pushNamed(
+          RouteName.editList,
+          pathParameters: {
+            'id': movieId.toString(),
+          },
+          extra: {
+            'is_edit': true,
+          },
+        );
+      } else {
+        //pilih delete
+        showDialog(
+          context: context,
+          builder: (context) {
+            return MovieAlertDialog(
+              title: "Are you sure to delete list?",
+              description: "‘Drama|Romance’ list will be deleted after tap on sure button.",
+              positiveTitle: "Sure",
+              positiveAction: () {
+                _handleDelete(movieId);
+              },
+              negativeTitle: "Cancel",
+            );
+          },
+        );
       }
-      //pilih delete
-      showDialog(
-        context: context,
-        builder: (context) {
-          return MovieAlertDialog(
-            title: "Are you sure to delete list?",
-            description: "‘Drama|Romance’ list will be deleted after tap on sure button.",
-            positiveTitle: "Sure",
-            positiveAction: () {
-              _handleDelete(movieId);
-            },
-            negativeTitle: "Cancel",
-          );
-        },
-      );
     });
   }
 
@@ -78,7 +90,7 @@ class _MyListScreenState extends State<MyListScreen> {
   void _handleDelete(int id) async {
     goRouter.pop();
     goRouter.pop();
-    showLoading(context);
+    showLoading(_context);
 
     _listBloc.add(ListDeleted(id: id));
   }
@@ -102,14 +114,12 @@ class _MyListScreenState extends State<MyListScreen> {
           children: [
             Expanded(
               child: BlocConsumer<ListBloc, ListState>(
+                listenWhen: (previous, current) => previous.deleteStatus != current.deleteStatus,
                 listener: (context, state) {
                   if (state.deleteStatus == ApiResultStatus.success) {
-                    hideLoading(context);
+                    hideLoading(_context);
                     _handleRefresh();
                   }
-                },
-                listenWhen: (previous, current) {
-                  return previous.deleteStatus != current.deleteStatus;
                 },
                 builder: (context, state) {
                   if (state.status == ApiResultStatus.init || state.status == ApiResultStatus.loading) {
@@ -127,6 +137,14 @@ class _MyListScreenState extends State<MyListScreen> {
                     itemBuilder: (context, index) => MovieMylistCard(
                       data: data[index],
                       onMenuTap: _onMenuTap,
+                      onItemTap: (int id) {
+                        goRouter.pushNamed(
+                          RouteName.detailList,
+                          pathParameters: {
+                            "id": id.toString(),
+                          },
+                        );
+                      },
                     ),
                     separatorBuilder: (context, index) => const SizedBox(height: 8),
                     padding: const EdgeInsets.all(16),

@@ -6,6 +6,7 @@ import 'package:movie_app/presentation/bloc/account/account_bloc.dart';
 import 'package:movie_app/presentation/bloc/api_result_state.dart';
 import 'package:movie_app/config/di.dart';
 import 'package:movie_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:movie_app/presentation/bloc/detail_list/detail_list_bloc.dart';
 import 'package:movie_app/presentation/bloc/genre/genre_bloc.dart';
 import 'package:movie_app/presentation/bloc/genre/genre_bloc.dart';
 import 'package:movie_app/presentation/bloc/home/home_bloc.dart';
@@ -62,6 +63,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<ListBloc>(create: (context) => ListBloc(listRepository: inject())),
         BlocProvider<MoviesBloc>(create: (context) => MoviesBloc(movieRepository: inject())),
         BlocProvider<GenreBloc>(create: (context) => GenreBloc(genreRepository: inject())),
+        BlocProvider<DetailListBloc>(
+          create: (context) => DetailListBloc(
+            listRepository: inject(),
+            accountRepository: inject(),
+            movieRepository: inject(),
+          ),
+        ),
       ],
       child: LocalizationProvider(
         state: LocalizationProvider.of(context).state,

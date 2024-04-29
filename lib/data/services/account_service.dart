@@ -15,22 +15,22 @@ class AccountService {
     );
   }
 
-  Future<ListApiResponse<RatedMovieModel>> getRatedMovie() async {
+  Future<ListApiResponse<MovieModel>> getRatedMovie() async {
     return clientExecutor(
       execute: () async {
         final res = await client.get("account/account_id/rated/movies");
 
-        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => RatedMovieModel.fromJson(e)).toList());
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MovieModel.fromJson(e)).toList());
       },
     );
   }
 
-  Future<ListApiResponse<RatedMovieModel>> getFavoriteMovie() async {
+  Future<ListApiResponse<MovieModel>> getFavoriteMovie() async {
     return clientExecutor(
       execute: () async {
         final res = await client.get("account/account_id/favorite/movies");
 
-        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => RatedMovieModel.fromJson(e)).toList());
+        return ListApiResponse.fromJson(res.data, (json) => json.map((e) => MovieModel.fromJson(e)).toList());
       },
     );
   }

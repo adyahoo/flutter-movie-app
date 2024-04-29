@@ -62,6 +62,32 @@ final goRouter = GoRouter(
           name: RouteName.createList,
           builder: (context, state) => const CreateListScreen(),
         ),
+        GoRoute(
+          path: RoutePath.editList,
+          name: RouteName.editList,
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+
+            return CreateListScreen(
+              id: int.parse(state.pathParameters['id'] ?? '0'),
+              isEdit: extra['is_edit'] as bool,
+            );
+          },
+        ),
+        GoRoute(
+          path: RoutePath.selectMovie,
+          name: RouteName.selectMovie,
+          builder: (context, state) => SelectMovieScreen(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
+        GoRoute(
+          path: RoutePath.detailList,
+          name: RouteName.detailList,
+          builder: (context, state) => DetailListScreen(
+            id: int.parse(state.pathParameters['id'] ?? '0'),
+          ),
+        ),
       ],
     )
   ],

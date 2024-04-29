@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/data/model/account_model.dart';
 import 'package:movie_app/config/app_color.dart';
+import 'package:movie_app/data/model/movie_model.dart';
 import 'package:movie_app/utils/constants.dart';
 import 'package:movie_app/utils/dummies/MovieDummyData.dart';
 
@@ -13,13 +13,44 @@ class MovieRatingCard extends StatelessWidget {
     required this.movie,
     required this.type,
     required this.onMenuClicked,
-    required this.onRateClicked,
+    required this.onButtonClicked,
   });
 
-  final RatedMovieModel movie;
+  const MovieRatingCard.picker({
+    super.key,
+    required this.movie,
+    required this.onButtonClicked,
+  })  : type = MenuType.PICKER,
+        onMenuClicked = null;
+
+  const MovieRatingCard.remove({
+    super.key,
+    required this.movie,
+    required this.onButtonClicked,
+  })  : type = MenuType.DELETE,
+        onMenuClicked = null;
+
+  final MovieModel movie;
   final MenuType type;
-  final Function() onMenuClicked;
-  final Function() onRateClicked;
+  final Function()? onMenuClicked;
+  final Function() onButtonClicked;
+
+  String getActionTitle() {
+    switch (type) {
+      case MenuType.RATING:
+        if (movie.rating != null) {
+          return "Rated ${movie.rating}";
+        } else {
+          return "Rate This";
+        }
+      case MenuType.PICKER:
+        return "Select Movie";
+      case MenuType.DELETE:
+        return "Remove";
+      default:
+        return "Remove From Favorites";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,54 +79,59 @@ class MovieRatingCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      movie.date,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        movie.title,
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: TextColor.primary),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        movie.date,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.secondary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Row(
               children: [
-                InkWell(
-                  onTap: onMenuClicked,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: TextColor.placeholder, width: 1),
-                    ),
-                    child: Icon(
-                      (type == MenuType.RATING) ? Icons.more_horiz_outlined : Icons.list_rounded,
-                      size: 20,
-                      color: TextColor.primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
+                (type != MenuType.PICKER && type != MenuType.DELETE)
+                    ? InkWell(
+                        onTap: onMenuClicked,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: TextColor.placeholder, width: 1),
+                          ),
+                          child: Icon(
+                            (type == MenuType.RATING) ? Icons.more_horiz_outlined : Icons.list_rounded,
+                            size: 20,
+                            color: TextColor.primary,
+                          ),
+                        ),
+                      )
+                    : const SizedBox(),
                 Expanded(
                   child: MovieButton.outline(
-                    text: (type == MenuType.RATING) ? "Rated ${movie.rating}" : "Remove From Favorites",
-                    icon: (type == MenuType.RATING) ? Icons.check : null,
+                    text: getActionTitle(),
+                    icon: (type == MenuType.RATING && movie.rating != null) ? Icons.check : null,
                     isLoading: false,
-                    onPress: onRateClicked,
+                    onPress: onButtonClicked,
                     size: MovieButtonSize.small,
+                    variant: (type == MenuType.DELETE) ? MovieButtonVariant.gray : MovieButtonVariant.blue,
                   ),
                 ),
               ],

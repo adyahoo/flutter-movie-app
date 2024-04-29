@@ -2,13 +2,28 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 class MovieModel extends Equatable {
-  const MovieModel({required this.id, required this.title, this.poster, required this.releaseDate, required this.overview});
+  const MovieModel({
+    required this.id,
+    required this.title,
+    this.poster,
+    required this.releaseDate,
+    required this.overview,
+    this.rating,
+  });
 
   final int id;
   final String title;
+  final String overview;
   final String? poster;
   final String releaseDate;
-  final String overview;
+  final double? rating;
+
+  String get date {
+    final format = DateTime.parse(releaseDate);
+    final date = DateFormat("MMMM dd, yyyy").format(format);
+
+    return date;
+  }
 
   factory MovieModel.fromJson(Map<String, dynamic> json) => MovieModel(
         id: json['id'],
@@ -16,10 +31,11 @@ class MovieModel extends Equatable {
         poster: json['poster_path'],
         releaseDate: (json['release_date'] != "") ? json['release_date'] : "-",
         overview: json['overview'],
+        rating: json['rating'],
       );
 
   @override
-  List<Object?> get props => [id, title, poster, overview];
+  List<Object?> get props => [id, title, poster, overview, rating];
 }
 
 class MovieDetailModel extends Equatable {
@@ -282,30 +298,34 @@ class ImageModel extends Equatable {
 }
 
 class AccountStatesModel extends Equatable {
-  const AccountStatesModel({required this.favorite, required this.rated});
+  const AccountStatesModel({required this.id, required this.favorite, required this.rated});
 
+  final int id;
   final bool favorite;
   final dynamic rated;
 
   factory AccountStatesModel.fromJson(Map<String, dynamic> map) {
     return AccountStatesModel(
+      id: map['id'],
       favorite: map['favorite'],
       rated: (map['rated'] is bool) ? map['rated'] : map['rated']['value'],
     );
   }
 
   AccountStatesModel copyWith({
+    int? id,
     bool? favorite,
     dynamic? rated,
   }) {
     return AccountStatesModel(
+      id: id ?? this.id,
       favorite: favorite ?? this.favorite,
       rated: rated ?? this.rated,
     );
   }
 
   @override
-  List<Object> get props => [favorite, rated];
+  List<Object> get props => [id, favorite, rated];
 }
 
 class MovieListModel extends Equatable {

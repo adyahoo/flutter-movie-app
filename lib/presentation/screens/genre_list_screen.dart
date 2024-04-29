@@ -10,6 +10,7 @@ class GenreListScreen extends StatefulWidget {
 class _GenreListScreenState extends State<GenreListScreen> {
   late GenreBloc _genreBloc;
   List<int> selectedIds = [];
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _GenreListScreenState extends State<GenreListScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16, bottom: 8, left: 16),
             child: MovieTextField.search(
+              controller: _searchController,
               placeholder: "Search genres...",
               onSaved: _doSearchGenre,
               onClear: _doResetSearch,

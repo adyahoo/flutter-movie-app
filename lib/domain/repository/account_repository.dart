@@ -15,7 +15,7 @@ class AccountRepository {
     }
   }
 
-  Future<ListApiResponse<RatedMovieModel>> getRatedMovie() async {
+  Future<ListApiResponse<MovieModel>> getRatedMovie() async {
     try {
       final res = await accountService.getRatedMovie();
 
@@ -25,7 +25,7 @@ class AccountRepository {
     }
   }
 
-  Future<ListApiResponse<RatedMovieModel>> getFavoriteMovie() async {
+  Future<ListApiResponse<MovieModel>> getFavoriteMovie() async {
     try {
       final res = await accountService.getFavoriteMovie();
 

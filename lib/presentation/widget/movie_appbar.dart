@@ -34,6 +34,8 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
   void Function()? onClear;
   void Function(String?)? onSaved;
 
+  final _searchController = TextEditingController();
+
   Widget _renderScreenAppBarContent(BuildContext context, String? text) {
     Widget content = Image.asset(
       "assets/images/logo.png",
@@ -58,7 +60,9 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
           "assets/images/logo.png",
           height: 16,
         ),
+        const SizedBox(height: 8),
         MovieTextField.search(
+          controller: _searchController,
           placeholder: translate("search_movie"),
           onSaved: (value) {},
           onTap: onTapInput,
@@ -70,6 +74,7 @@ class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _renderSearchAppBarContent() {
     return MovieTextField.search(
+      controller: _searchController,
       placeholder: translate("search_movie"),
       onSaved: onSaved!,
       onTap: onTapInput,

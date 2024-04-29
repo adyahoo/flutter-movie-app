@@ -9,8 +9,27 @@ abstract class ListEvent extends Equatable {
 
 class MovieListFetched extends ListEvent {}
 
+class ListDetailFetched extends ListEvent {
+  const ListDetailFetched({required this.id});
+
+  final int id;
+
+  @override
+  List<Object> get props => [id];
+}
+
 class MovieAddedToList extends ListEvent {
   const MovieAddedToList({required this.listId, required this.movieId});
+
+  final int listId;
+  final int movieId;
+
+  @override
+  List<Object> get props => [listId, movieId];
+}
+
+class MovieRemovedFromList extends ListEvent {
+  const MovieRemovedFromList({required this.listId, required this.movieId});
 
   final int listId;
   final int movieId;

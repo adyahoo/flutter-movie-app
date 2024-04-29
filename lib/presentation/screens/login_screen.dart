@@ -10,6 +10,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late AuthBloc _authBloc;
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocBuilder<AuthBloc, ApiResultState>(
       builder: (context, state) {
         return Scaffold(
-          appBar:  MovieAppBar(),
+          appBar: MovieAppBar(),
           body: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -58,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         MovieTextField(
+                          controller: _usernameController,
                           label: "Username",
                           placeholder: "Ex: Mamanks",
                           onSaved: (value) {
@@ -66,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 18),
                         MovieTextField(
+                          controller: _passwordController,
                           label: "Password",
                           placeholder: "Ex: Password123",
                           type: MovieTextFieldType.password,

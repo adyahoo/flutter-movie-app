@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movie_app/domain/repository/genre_repository.dart';
-import 'package:movie_app/domain/repository/genre_repository.dart';
 
 import '../data/services/service.dart';
 import '../domain/repository/repository.dart';

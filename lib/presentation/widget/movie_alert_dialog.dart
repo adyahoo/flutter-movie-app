@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:movie_app/config/navigation/router.dart';
 import 'package:movie_app/presentation/widget/movie_button.dart';
@@ -78,6 +79,7 @@ class MovieAlertDialog extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.displayMedium,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           (description != null)

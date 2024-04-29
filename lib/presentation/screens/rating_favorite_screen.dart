@@ -13,6 +13,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
   late RatingFavoriteBloc _ratingFavoriteBloc;
   late MovieDetailBloc _movieDetailBloc;
   late AccountBloc _accountBloc;
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
     super.initState();
   }
 
-  void _showOptionBS(RatedMovieModel movie) {
+  void _showOptionBS(MovieModel movie) {
     showOptionBS(context, MovieDummyData.getRatingMenu(), (menuId) {
       switch (menuId) {
         case 1:
@@ -44,7 +45,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
     });
   }
 
-  void _menuClickHandler(RatedMovieModel movie) {
+  void _menuClickHandler(MovieModel movie) {
     if (widget.type == MenuType.RATING.name) {
       _showOptionBS(movie);
     } else {
@@ -52,12 +53,12 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
     }
   }
 
-  void _actionClickHandler(RatedMovieModel movie) {
+  void _actionClickHandler(MovieModel movie) {
     if (widget.type == MenuType.RATING.name) {
       showRateBS(
         context,
         title: movie.title,
-        poster: movie.poster,
+        poster: movie.poster ?? "",
         initialRate: movie.rating ?? 0,
         onRateClicked: (value) {
           _movieDetailBloc.add(MovieRatingAdded(id: movie.id, rateValue: value));
@@ -145,6 +146,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: MovieTextField.search(
+                    controller: _searchController,
                     placeholder: translate("search_movie"),
                     onSaved: (value) {},
                     isEditable: true,
@@ -164,7 +166,7 @@ class _RatingFavoriteScreenState extends State<RatingFavoriteScreen> {
                               onMenuClicked: () {
                                 _menuClickHandler(movie);
                               },
-                              onRateClicked: () {
+                              onButtonClicked: () {
                                 _actionClickHandler(movie);
                               },
                             );

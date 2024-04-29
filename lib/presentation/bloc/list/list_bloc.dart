@@ -29,6 +29,20 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       }
     });
 
+    on<ListDetailFetched>(
+      (event, emit) async {
+        emit(state.copyWith(detailStatus: ApiResultStatus.loading));
+
+        try {
+          final res = await listRepository.getListDetail(event.id);
+
+          emit(state.copyWith(detailStatus: ApiResultStatus.success, detail: res));
+        } on ApiException catch (e) {
+          emit(state.copyWith(detailStatus: ApiResultStatus.error, error: e));
+        }
+      },
+    );
+
     on<MovieAddedToList>(
       (event, emit) async {
         emit(state.copyWith(submitStatus: ApiResultStatus.loading));
@@ -39,6 +53,20 @@ class ListBloc extends Bloc<ListEvent, ListState> {
           emit(state.copyWith(submitStatus: ApiResultStatus.success));
         } on ApiException catch (e) {
           emit(state.copyWith(submitStatus: ApiResultStatus.error, error: e));
+        }
+      },
+    );
+
+    on<MovieRemovedFromList>(
+          (event, emit) async {
+        emit(state.copyWith(deleteStatus: ApiResultStatus.loading));
+
+        try {
+          await listRepository.removeMovie(event.listId, event.movieId);
+
+          emit(state.copyWith(deleteStatus: ApiResultStatus.success));
+        } on ApiException catch (e) {
+          emit(state.copyWith(deleteStatus: ApiResultStatus.error, error: e));
         }
       },
     );

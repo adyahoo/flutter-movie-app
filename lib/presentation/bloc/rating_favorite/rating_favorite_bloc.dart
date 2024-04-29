@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:movie_app/data/model/movie_model.dart';
 import 'package:movie_app/presentation/bloc/api_result_state.dart';
-import 'package:movie_app/data/model/account_model.dart';
 
 import '../../../config/exception/api_exception.dart';
 import '../../../data/model/base_model.dart';

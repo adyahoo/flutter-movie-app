@@ -6,26 +6,31 @@ enum MovieTextFieldType { text, password, search }
 class MovieTextField extends StatefulWidget {
   const MovieTextField({
     super.key,
+    required this.controller,
     required this.label,
     required this.placeholder,
     required this.onSaved,
     this.type = MovieTextFieldType.text,
     this.isEditable = true,
     this.isRequired = false,
+    this.initialValue,
   })  : onTap = null,
         onClear = null;
 
   const MovieTextField.search({
     super.key,
+    required this.controller,
     required this.placeholder,
     required this.onSaved,
     this.onTap,
     this.onClear,
     this.isEditable = true,
+    this.initialValue,
   })  : label = "",
         isRequired = false,
         type = MovieTextFieldType.search;
 
+  final TextEditingController controller;
   final String placeholder;
   final String label;
   final MovieTextFieldType type;
@@ -34,13 +39,13 @@ class MovieTextField extends StatefulWidget {
   final void Function()? onClear;
   final bool isEditable;
   final bool isRequired;
+  final String? initialValue;
 
   @override
   State<MovieTextField> createState() => _MovieTextFieldState();
 }
 
 class _MovieTextFieldState extends State<MovieTextField> {
-  final _inputController = TextEditingController();
   final _focusNode = FocusNode();
   var isFocus = false;
   var isError = false;
@@ -73,7 +78,7 @@ class _MovieTextFieldState extends State<MovieTextField> {
 
     return TextFormField(
       focusNode: _focusNode,
-      controller: _inputController,
+      controller: widget.controller,
       keyboardType: TextInputType.text,
       maxLines: 1,
       decoration: InputDecoration(
@@ -103,7 +108,7 @@ class _MovieTextFieldState extends State<MovieTextField> {
   Widget _renderTextField(Color bgColor, Widget? suffixIcon) {
     return TextFormField(
       focusNode: _focusNode,
-      controller: _inputController,
+      controller: widget.controller,
       keyboardType: TextInputType.text,
       maxLines: 1,
       obscureText: (widget.type == MovieTextFieldType.password) ? isObscure : false,
@@ -161,7 +166,7 @@ class _MovieTextFieldState extends State<MovieTextField> {
             widget.onClear!();
           }
           FocusScope.of(context).unfocus();
-          _inputController.clear();
+          widget.controller.clear();
         },
         icon: Icon(
           Icons.cancel_rounded,
@@ -179,15 +184,21 @@ class _MovieTextFieldState extends State<MovieTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(text: widget.label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.label)),
-              (widget.isRequired) ? TextSpan(text: "*", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : const TextSpan(),
-            ],
-          ),
-        ),
-        const SizedBox(height: 4),
+        (widget.type != MovieTextFieldType.search)
+            ? Column(
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: widget.label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: TextColor.label)),
+                        (widget.isRequired) ? TextSpan(text: "*", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : const TextSpan(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                ],
+              )
+            : const SizedBox(),
         (widget.type == MovieTextFieldType.search) ? _renderSearchField(bgColor, suffixIcon) : _renderTextField(bgColor, suffixIcon),
       ],
     );

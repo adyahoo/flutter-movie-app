@@ -55,12 +55,10 @@ class _AccountScreenState extends State<AccountScreen> {
         return MovieAlertDialog(
           title: translate("logout_title"),
           description: translate("logout_desc"),
-          positiveTitle: translate("cancel"),
+          positiveTitle: translate("sure"),
           positiveAction: _doLogout,
-          negativeTitle: translate("sure"),
-          negativeAction: () {
-            goRouter.pop();
-          },
+          negativeTitle: translate("cancel"),
+          negativeAction: () {},
         );
       },
     );

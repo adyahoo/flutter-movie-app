@@ -5,6 +5,8 @@ enum MovieButtonType { filled, outline, text }
 
 enum MovieButtonSize { small, normal }
 
+enum MovieButtonVariant { blue, gray }
+
 class MovieButton extends StatelessWidget {
   MovieButton.filled({
     super.key,
@@ -12,13 +14,13 @@ class MovieButton extends StatelessWidget {
     required this.isLoading,
     required this.onPress,
     this.size = MovieButtonSize.normal,
+    this.variant = MovieButtonVariant.blue,
     this.icon,
   })  : type = MovieButtonType.filled,
-        textColor = Colors.white,
         bgColor = SecondaryColor.main,
         disabledTextColor = NeutralColor.neutral10,
         disabledBgColor = NeutralColor.neutral50,
-        borderColor = null;
+        borderColor = SecondaryColor.main;
 
   MovieButton.outline({
     super.key,
@@ -26,9 +28,9 @@ class MovieButton extends StatelessWidget {
     required this.isLoading,
     required this.onPress,
     this.size = MovieButtonSize.normal,
+    this.variant = MovieButtonVariant.blue,
     this.icon,
   })  : type = MovieButtonType.outline,
-        textColor = SecondaryColor.main,
         bgColor = null,
         disabledTextColor = NeutralColor.neutral50,
         disabledBgColor = null,
@@ -40,13 +42,13 @@ class MovieButton extends StatelessWidget {
     required this.isLoading,
     required this.onPress,
     this.size = MovieButtonSize.normal,
+    this.variant = MovieButtonVariant.blue,
     this.icon,
   })  : type = MovieButtonType.text,
-        textColor = SecondaryColor.main,
         bgColor = null,
         disabledTextColor = NeutralColor.neutral70,
         disabledBgColor = NeutralColor.neutral40,
-        borderColor = null;
+        borderColor = Colors.white;
 
   final String text;
   final MovieButtonSize size;
@@ -55,15 +57,35 @@ class MovieButton extends StatelessWidget {
   final IconData? icon;
 
   final MovieButtonType type;
-  final Color textColor;
   final Color? bgColor;
   final Color disabledTextColor;
   final Color? disabledBgColor;
-  final Color? borderColor;
+  final Color borderColor;
+  final MovieButtonVariant variant;
+
+  Color getBorderColor() {
+    if (variant == MovieButtonVariant.gray) {
+      return TextColor.secondary;
+    }
+
+    return borderColor;
+  }
+
+  Color get textColor {
+    if (type == MovieButtonType.filled) {
+      return Colors.white;
+    }
+
+    if (variant == MovieButtonVariant.gray) {
+      return TextColor.secondary;
+    }
+
+    return SecondaryColor.main;
+  }
 
   RoundedRectangleBorder get shape => RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
-        side: (type == MovieButtonType.outline) ? BorderSide(color: (onPress != null) ? SecondaryColor.main : NeutralColor.neutral50, width: 1) : BorderSide.none,
+        side: (type == MovieButtonType.outline) ? BorderSide(color: (onPress != null) ? getBorderColor() : NeutralColor.neutral50, width: 1) : BorderSide.none,
       );
 
   EdgeInsetsGeometry get padding => (size == MovieButtonSize.normal) ? const EdgeInsets.symmetric(vertical: 12, horizontal: 32) : const EdgeInsets.symmetric(vertical: 8, horizontal: 32);

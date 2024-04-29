@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
+import 'package:movie_app/data/model/my_list_model.dart';
+import 'package:movie_app/presentation/bloc/detail_list/detail_list_bloc.dart';
 import 'package:movie_app/presentation/bloc/list/list_bloc.dart';
+import 'package:movie_app/presentation/widget/movie_loading_overlay.dart';
 import 'package:movie_app/presentation/widget/movie_mylist_card.dart';
 import 'package:movie_app/presentation/widget/shimmer/shimmer_list.dart';
 
@@ -52,3 +56,5 @@ part 'select_list_screen.dart';
 part 'genre_list_screen.dart';
 part 'my_list_screen.dart';
 part 'create_list_screen.dart';
+part 'select_movie_screen.dart';
+part 'detail_list_screen.dart';

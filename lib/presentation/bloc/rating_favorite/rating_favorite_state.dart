@@ -9,14 +9,14 @@ class RatingFavoriteState extends Equatable {
 
   final ApiResultStatus status;
   final ApiException? error;
-  final ListApiResponse<RatedMovieModel>? ratedMovies;
+  final ListApiResponse<MovieModel>? ratedMovies;
 
   factory RatingFavoriteState.initial() => const RatingFavoriteState(status: ApiResultStatus.init);
 
   RatingFavoriteState copyWith({
     ApiResultStatus? status,
     ApiException? error,
-    ListApiResponse<RatedMovieModel>? ratedMovies,
+    ListApiResponse<MovieModel>? ratedMovies,
   }) {
     return RatingFavoriteState(
       status: status ?? this.status,
